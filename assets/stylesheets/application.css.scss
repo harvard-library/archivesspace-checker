@@ -1,0 +1,11 @@
+@import 'bourbon';
+@import 'neat';
+
+.content {
+  @include outer-container(100%);
+  > h1, > p, > hr, > form  {
+    @include row();
+    @include span-columns(12);
+    text-align: center;
+  }
+}

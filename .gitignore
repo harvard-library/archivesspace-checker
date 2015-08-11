@@ -1,0 +1,7 @@
+# Various Emacs detritus
+*~
+**/\#*\#
+**/.#*
+
+# Asset stuff
+.sass-cache
