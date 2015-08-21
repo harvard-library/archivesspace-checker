@@ -6,6 +6,13 @@ gem 'rake'
 gem 'sinatra-asset-pipeline', :require => 'sinatra/asset_pipeline'
 gem 'uglifier'
 
+group :development do
+  gem 'capistrano'
+  gem 'capistrano-rvm'
+  gem 'capistrano-bundler'
+  gem 'pry'
+end
+
 group 'test' do
   gem 'rack-test'
 end
@@ -16,7 +23,6 @@ group :assets do
 end
 
 gem 'sinatra'
-gem 'pry'
 gem 'schematronium', platform: :jruby, git: 'https://github.com/harvard-library/schematronium.git'
 gem 'saxon-xslt', '~> 0.6.0', platform: :jruby, git: 'https://github.com/harvard-library/saxon-xslt.git', ref: "dave"
 gem 'nokogiri'
