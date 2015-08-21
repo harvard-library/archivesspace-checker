@@ -8,7 +8,14 @@
   </phase>
   <phase id="manual">
     <active pattern="descgrp-manual" />
+    <active pattern="extent-nonnumeric-manual" />
   </phase>
+
+  <pattern id="extent-nonnumeric-manual">
+    <rule context="//extent">
+      <assert test="matches(., '^[0123456789]')" diagnostics="enm-1">'extent' element content should not start with non-numeric character.</assert>
+    </rule>
+  </pattern>
 
   <pattern id="descgrp-automated">
     <rule context="//descgrp[@type and @type != 'add']/head">
@@ -20,7 +27,7 @@
                    //descgrp[@type and @type != 'add']/chronlist|
                    //descgrp[@type and @type != 'add']/list|
                    //descgrp[@type and @type != 'add']/p">
-      <assert test="not(.)">'descgrp' is deprecated, and must be removed. '<value-of select="local-name(.)" />' element can be moved out of 'descgrp' element into a new 'note' element in surrounding '<value-of select="local-name(./../..)" />'</assert>
+      <assert test="not(.)" diagnostics="da-2">'descgrp' is deprecated, and must be removed</assert>
     </rule>
     <rule context="//descgrp[@type and @type != 'add']/accessrestrict|
                    //descgrp[@type and @type != 'add']/accruals|
@@ -42,7 +49,7 @@
                    //descgrp[@type and @type != 'add']/prefercite|
                    //descgrp[@type and @type != 'add']/processinfo|
                    //descgrp[@type and @type != 'add']/userestrict">
-      <assert test="not(.)">'descgrp' is deprecated, and must be removed. '<value-of select="local-name(.)" />' element can be moved out of 'descgrp element into surrounding '<value-of select="local-name(./../..)" />'</assert>
+      <assert test="not(.)" diagnostics="da-3">'descgrp' is deprecated, and must be removed</assert>
     </rule>
   </pattern>
   <pattern id="descgrp-manual">
@@ -50,5 +57,10 @@
       <assert test="not(@type='add')">'descgrp' is deprecated, and must be removed. 'descgrp' element with type 'add' requires manual review and intervention.</assert>
     </rule>
   </pattern>
+  <diagnostics>
+    <diagnostic id="enm-1">Value is "<value-of select="." />"</diagnostic>
+    <diagnostic id="da-2">'<value-of select="local-name(.)" />' element can be moved out of 'descgrp' element into a new 'note' element in surrounding '<value-of select="local-name(./../..)" />'</diagnostic>
+    <diagnostic id="da-3">'<value-of select="local-name(.)" />' element can be moved out of 'descgrp element into surrounding '<value-of select="local-name(./../..)" />'</diagnostic>
+  </diagnostics>
 
 </schema>
