@@ -4,6 +4,8 @@ lock '3.4.0'
 set :application, 'archivesspace_web_checker'
 set :repo_url, 'git@github.com:harvard-library/archivesspace-checker.git'
 
+set :bundle_bins, fetch(:bundle_bins, []).push('nohup')
+
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
@@ -26,7 +28,7 @@ set :repo_url, 'git@github.com:harvard-library/archivesspace-checker.git'
 # set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
 
 # Default value for linked_dirs is []
-# set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
+set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp', 'tmp', 'tmp', 'vendor/bundle', 'public')
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -35,20 +37,25 @@ set :repo_url, 'git@github.com:harvard-library/archivesspace-checker.git'
 # set :keep_releases, 5
 
 namespace :deploy do
+  task :restart do
+    on roles(:app) do
+      execute :touch, "#{release_path}/tmp/restart.txt"
+    end
+  end
 
-  desc "Basic run on 9292, replace ASAP with passenger or some such"
   task :start do
-    on roles :all do
-      execute :nohup, 'rackup 2>&1 &'
+    on roles(:app) do
+      run :touch, "#{release_path}/tmp/restart.txt"
     end
   end
 
   task :stop do
-    on roles :all do
-      if test("[ -f #{shared_path}/rack.pid ]")
-        execute :kill, '-TERM', capture(:cat, "#{shared_path}/rack.pid")
-      end
-    end
+    # Nothing
   end
+	
+  before 'deploy:start', 'rvm:hook'
+  before 'deploy:stop', 'rvm:hook'
+  before 'bundler:install', 'rvm:hook'
+
 
 end
