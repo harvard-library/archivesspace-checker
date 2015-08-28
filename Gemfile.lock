@@ -93,6 +93,9 @@ GEM
       colorize (>= 0.7.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
+    therubyrhino (2.0.4)
+      therubyrhino_jar (>= 1.7.3)
+    therubyrhino_jar (1.7.6)
     thor (0.19.1)
     tilt (1.4.1)
     uglifier (2.7.1)
@@ -118,6 +121,7 @@ DEPENDENCIES
   schematronium!
   sinatra
   sinatra-asset-pipeline
+  therubyrhino
   uglifier
 
 BUNDLED WITH

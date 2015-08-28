@@ -5,6 +5,7 @@ gem 'puma'
 gem 'rake'
 gem 'sinatra-asset-pipeline', :require => 'sinatra/asset_pipeline'
 gem 'uglifier'
+gem 'therubyrhino'
 
 group :development do
   gem 'capistrano'
