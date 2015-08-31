@@ -21,6 +21,7 @@ end
 group :assets do
   gem 'bourbon'
   gem 'neat'
+  gem 'bitters'
 end
 
 gem 'sinatra'

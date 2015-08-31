@@ -45,16 +45,27 @@ namespace :deploy do
 
   task :start do
     on roles(:app) do
-      run :touch, "#{release_path}/tmp/restart.txt"
+      execute :touch, "#{release_path}/tmp/restart.txt"
     end
   end
 
   task :stop do
     # Nothing
   end
-	
+
+  task :assets do
+    on roles(:app) do
+      within current_path do
+        execute :rake, 'assets:precompile'
+      end
+    end
+  end
+
   before 'deploy:start', 'rvm:hook'
   before 'deploy:stop', 'rvm:hook'
+  before 'deploy:assets', 'rvm:hook'
+  before 'deploy:finished', 'deploy:assets'
+
   before 'bundler:install', 'rvm:hook'
 
 
