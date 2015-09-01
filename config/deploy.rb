@@ -65,6 +65,7 @@ namespace :deploy do
   before 'deploy:stop', 'rvm:hook'
   before 'deploy:assets', 'rvm:hook'
   before 'deploy:finished', 'deploy:assets'
+  after  'deploy:finished', 'deploy:restart'
 
   before 'bundler:install', 'rvm:hook'
 
