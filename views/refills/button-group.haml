@@ -1,0 +1,9 @@
+-# Button Groups
+-#   Takes locals: name, buttons
+-#   Reference: http://refills.bourbon.io/components/#button-group
+
+.button-group
+  - buttons.each do |btn|
+    %label
+      %input{type: "radio", name: name, value: btn[:value], checked: btn.key?(:checked) ? btn[:checked] : false }
+      %span.button-group-item= btn[:name]

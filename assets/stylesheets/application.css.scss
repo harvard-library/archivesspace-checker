@@ -1,13 +1,33 @@
 @import 'bourbon';
 @import 'base/base';
 @import 'neat';
-
+@import 'refills';
 
 .content {
   @include outer-container(100%);
-  > h1, > p, > hr, > form  {
+  > * {
     @include row();
     @include span-columns(12);
     text-align: center;
+  }
+  > form {
+    @include span-columns(4);
+    @include shift(4);
+    * {
+      text-align: center;
+    }
+    > input[type="file"] {
+      text-align: center;
+    }
+    > .form-help {
+      color: #747474;
+      margin-bottom: 1em;
+    }
+    > .form-element {
+      @include span-columns(4 of 4);
+      > .button-group {
+        display:inline-block;
+      }
+    }
   }
 }

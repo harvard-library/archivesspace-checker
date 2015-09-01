@@ -6,8 +6,16 @@ class ArchivesspaceChecker < Sinatra::Base
   set :assets_js_compressor, :uglifier
 
   register Sinatra::AssetPipeline
+  register Sinatra::Partial
 
   set :haml, :format => :html5
+
+  PHASE_OPTS = [
+    {name: "Manual", value: "manual", checked: true},
+    {name: "Automatic", value: "auto"},
+    {name: "Everything", value: "all"}
+
+  ]
 
   Saxon::Processor.default = Saxon::Processor.create(<<-EOF)
     <configuration xmlns="http://saxon.sf.net/ns/configuration" edition="HE">
@@ -38,6 +46,8 @@ class ArchivesspaceChecker < Sinatra::Base
 
     output
   end
+
+  # Routes
   get "/" do
     haml :index
   end

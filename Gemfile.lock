@@ -80,6 +80,8 @@ GEM
       sprockets (~> 2.12)
       sprockets-helpers (~> 1.1)
       sprockets-sass (~> 1.2)
+    sinatra-partial (0.4.0)
+      sinatra
     slop (3.6.0)
     spoon (0.0.4)
       ffi
@@ -126,6 +128,7 @@ DEPENDENCIES
   schematronium!
   sinatra
   sinatra-asset-pipeline
+  sinatra-partial
   therubyrhino
   uglifier
 

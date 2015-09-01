@@ -4,6 +4,7 @@ gem 'haml'
 gem 'puma'
 gem 'rake'
 gem 'sinatra-asset-pipeline', :require => 'sinatra/asset_pipeline'
+gem 'sinatra-partial'
 gem 'uglifier'
 gem 'therubyrhino'
 

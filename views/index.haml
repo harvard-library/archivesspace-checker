@@ -3,6 +3,13 @@
   Upload an EAD to check
 %hr
 %form{method: "post", enctype: "multipart/form-data"}
-  %input{type: "file", name: "eadFile"}
-  %br
-  %input{type: "submit", value: "Upload!"}
+  .form-element
+    %input{type: "file", name: "eadFile"}
+  %p.form-help
+    Choose an EAD file from your computer to check.
+  .form-element
+    = partial 'refills/button-group', locals: {name: 'phase', buttons: PHASE_OPTS}
+  %p.form-help
+    Choose whether you only want to see errors that need manual intervention, only errors that can be automatically fixed, or all errors.
+  .form-element
+    %input{type: "submit", value: "Upload!"}
