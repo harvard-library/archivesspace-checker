@@ -4,6 +4,13 @@
 @import 'refills';
 
 .content {
+  h1[id] {
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+  }
+  hr {
+    margin-top: 0;
+  }
   @include outer-container(100%);
   > * {
     @include row();
@@ -11,8 +18,18 @@
     text-align: center;
   }
   > form {
-    @include span-columns(4);
-    @include shift(4);
+    @include media(480px) {
+      @include span-columns(8);
+      @include shift(2);
+    }
+    @include media(1024px) {
+      @include span-columns(6);
+      @include shift(3);
+    }
+    @include media(1280px) {
+      @include span-columns(4);
+      @include shift(4);
+    }
     * {
       text-align: center;
     }
