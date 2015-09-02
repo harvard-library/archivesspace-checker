@@ -1,18 +1,3 @@
-GIT
-  remote: https://github.com/harvard-library/saxon-xslt.git
-  revision: 54e98d59ef512a2def23b2ce2ba9a68e991f09ed
-  ref: dave
-  specs:
-    saxon-xslt (0.6.0-java)
-
-GIT
-  remote: https://github.com/harvard-library/schematronium.git
-  revision: e281d8463d66f722de435a02f49e4207d70c7221
-  specs:
-    schematronium (0.0.0-java)
-      nokogiri (~> 1.6)
-      saxon-xslt (~> 0.5)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -68,6 +53,10 @@ GEM
       rack (>= 1.0)
     rake (10.4.2)
     sass (3.4.16)
+    saxon-xslt (0.7.0-java)
+    schematronium (0.1.0-java)
+      nokogiri (~> 1.6)
+      saxon-xslt (~> 0.7)
     sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -124,8 +113,8 @@ DEPENDENCIES
   puma
   rack-test
   rake
-  saxon-xslt (~> 0.6.0)!
-  schematronium!
+  saxon-xslt
+  schematronium (~> 0.1.0)
   sinatra
   sinatra-asset-pipeline
   sinatra-partial

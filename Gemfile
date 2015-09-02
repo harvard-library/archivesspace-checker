@@ -26,6 +26,6 @@ group :assets do
 end
 
 gem 'sinatra'
-gem 'schematronium', platform: :jruby, git: 'https://github.com/harvard-library/schematronium.git'
-gem 'saxon-xslt', '~> 0.6.0', platform: :jruby, git: 'https://github.com/harvard-library/saxon-xslt.git', ref: "dave"
+gem 'schematronium', '~> 0.1.0'
+gem 'saxon-xslt'
 gem 'nokogiri'

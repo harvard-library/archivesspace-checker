@@ -11,24 +11,20 @@ class ArchivesspaceChecker < Sinatra::Base
   set :haml, :format => :html5
 
   PHASE_OPTS = [
-    {name: "Manual", value: "manual", checked: true},
-    {name: "Automatic", value: "auto"},
-    {name: "Everything", value: "all"}
-
+    {name: "Manual", value: "'manual'", checked: "checked"},
+    {name: "Automatic", value: "'automated'"},
+    {name: "Everything", value: "'#ALL'"}
   ]
 
-  Saxon::Processor.default = Saxon::Processor.create(<<-EOF)
-    <configuration xmlns="http://saxon.sf.net/ns/configuration" edition="HE">
-      <global
-        lineNumbering="true" />
-    </configuration>
-  EOF
+  Saxon::Processor.default.config[:line_numbering] = true
 
   Checker = Schematronium.new(IO.read('schematron/descgrp.sch'))
 
-  def check_file(f, orig_name)
+  def check_file(f, orig_name, phase)
+    # If phase is other than default, bespoke checker
+    checker = (phase == "'#ALL'") ? Checker : Schematronium.new(IO.read('schematron/descgrp.sch'), phase)
     s_xml = Saxon.XML(f)
-    xml = Checker.check(s_xml.to_s)
+    xml = checker.check(s_xml.to_s)
     xml.remove_namespaces!
     xml = xml.xpath("//failed-assert") + xml.xpath("//successful-report")
     xml.each do |el|
@@ -55,6 +51,6 @@ class ArchivesspaceChecker < Sinatra::Base
   post "/" do
     headers "Content-Type" => "text/xml; charset=utf8"
     up = params['eadFile']
-    return check_file(up[:tempfile], up[:filename]).to_s
+    return check_file(up[:tempfile], up[:filename], params[:phase]).to_s
   end
 end

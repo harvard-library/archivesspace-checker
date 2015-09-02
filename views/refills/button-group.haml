@@ -5,5 +5,8 @@
 .button-group
   - buttons.each do |btn|
     %label
-      %input{type: "radio", name: name, value: btn[:value], checked: btn.key?(:checked) ? btn[:checked] : false }
+      - if btn.key? :checked
+        %input{type: "radio", name: name, value: btn[:value], checked: btn[:checked]}
+      - else
+        %input{type: "radio", name: name, value: btn[:value]}
       %span.button-group-item= btn[:name]
