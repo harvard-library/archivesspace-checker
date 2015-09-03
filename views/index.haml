@@ -1,6 +1,6 @@
 %h1#title Archivesspace EAD Checker
 %hr
-%form{method: "post", enctype: "multipart/form-data"}
+%form{action: 'result.xml', method: "post", enctype: "multipart/form-data"}
   .form-element
     %input{type: "file", name: "eadFile"}
   %p.form-help
@@ -8,6 +8,10 @@
   .form-element
     = partial 'refills/button-group', locals: {name: 'phase', buttons: PHASE_OPTS}
   %p.form-help
-    Choose whether you only want to see errors that need manual intervention, only errors that can be automatically fixed, or all errors.
+    See errors that need manual intervention, errors that can be automatically fixed, or all errors.
+  .form-element
+    = partial 'refills/button-group', locals: {name: 'format', buttons: OUTPUT_OPTS.values}
+  %p.form-help
+    Desired output format.
   .form-element
     %input{type: "submit", value: "Upload!", disabled: 'disabled'}
