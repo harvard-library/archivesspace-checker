@@ -7,7 +7,7 @@ $(function () {
       $('input[type="submit"]').prop('disabled', true);
     }
   });
-  $('input[name="format"]:checked').on('change', function (e) {
+  $('input[name="format"]').on('change', function (e) {
     var action = $('form').prop('action'),
         new_action = action.replace(/\.[^.]+$/, '.' + $(this).val());
     $('form').prop('action', new_action);
