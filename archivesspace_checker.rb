@@ -27,7 +27,7 @@ class ArchivesspaceChecker < Sinatra::Base
 
   stron_xml = Nokogiri::XML(IO.read('schematron/descgrp.sch')).remove_namespaces!
   STRON_REP = stron_xml.xpath('//rule').reduce({}) do |result, rule|
-    result[rule.xpath('comment()').text.strip]  = rule.xpath('//assert').map(&:text).map(&:strip)
+    result[rule.xpath('./comment()').text.strip]  = rule.xpath('./assert').map(&:text).map(&:strip)
     result
   end
 
