@@ -23,11 +23,17 @@ class ArchivesspaceChecker < Sinatra::Base
 
   Saxon::Processor.default.config[:line_numbering] = true
 
-  Checker = Schematronium.new(IO.read('schematron/descgrp.sch'))
+  CHECKER = Schematronium.new(IO.read('schematron/descgrp.sch'))
+
+  stron_xml = Nokogiri::XML(IO.read('schematron/descgrp.sch')).remove_namespaces!
+  STRON_REP = stron_xml.xpath('//rule').reduce({}) do |result, rule|
+    result[rule.xpath('comment()').text.strip]  = rule.xpath('//assert').map(&:text).map(&:strip)
+    result
+  end
 
   def check_file(f, phase)
     # If phase is other than default, bespoke checker
-    checker = (phase == "'#ALL'") ? Checker : Schematronium.new(IO.read('schematron/descgrp.sch'), phase)
+    checker = (phase == "'#ALL'") ? CHECKER : Schematronium.new(IO.read('schematron/descgrp.sch'), phase)
     s_xml = Saxon.XML(f)
     xml = checker.check(s_xml.to_s)
     xml.remove_namespaces!
@@ -81,6 +87,10 @@ class ArchivesspaceChecker < Sinatra::Base
   post "/result.:filetype" do
     headers "Content-Type" => "#{OUTPUT_OPTS[params[:filetype]][:mime]}; charset=utf8"
     up = params['eadFile']
-    return output(params[:filetype], check_file(up[:tempfile], params[:phase]), up[:filename]).to_s
+    output(params[:filetype], check_file(up[:tempfile], params[:phase]), up[:filename]).to_s
+  end
+
+  get "/possible-errors" do
+    haml :possible_errors
   end
 end
