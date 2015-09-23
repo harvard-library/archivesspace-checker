@@ -9,6 +9,7 @@
   <phase id="manual">
     <active pattern="descgrp-manual" />
     <active pattern="extent-nonnumeric-manual" />
+    <active pattern="did-manual" />
   </phase>
 
   <pattern id="extent-nonnumeric-manual">
@@ -64,26 +65,47 @@
     </rule>
   </pattern>
 
-  <pattern id="did-lacking-unitdate-or-unittitle">
-    <rule context="//did">
-      <!-- 'did' elements -->
-      <assert test="count(./unitdate|./unittitle) > 0" diagnostics="dluoum-1">
-        'did' elements should contain a unitdate and/or a unittitle.
+  <pattern id="did-manual">
+
+    <rule context="/ead/archdesc/did">
+      <!-- collection-level 'did' -->
+      <assert test=".[unitid]" diagnostics="didm-1">
+        Collection level 'did' element must contain a 'unitid' element.
+      </assert>
+
+      <assert test=".[unittitle]" diagnostics="didm-2">
+        Collection level 'did' element must contain a 'unittitle' element.
+      </assert>
+      <assert test=".[unitdate]" diagnostics="didm-3">
+        Collection level 'did' element must contain a 'unitdate' element.
+      </assert>
+      <assert test=".[physdesc/extent]" diagnostics="didm-5">
+        Collection level 'did' element must contain 'physdesc' element with 'extent' child.
       </assert>
     </rule>
+
+    <rule context="/ead/archdesc/*[not(local-name(.) = 'did')]//did">
+      <!-- subsidiary 'did' elements -->
+      <assert test="count(./unitdate|./unittitle) > 0" diagnostics="didm-4">
+        'did' elements must contain a either a 'unitdate' element, a 'unittitle' element or both.
+      </assert>
+    </rule>
+
   </pattern>
+
   <diagnostics>
     <diagnostic id="enm-1">Ref-number: 18
 Content: Value is "<value-of select="." />"</diagnostic>
-<diagnostic id="dm-1">Ref-number: 11</diagnostic>
-<diagnostic id="da-2">Ref-number: 11
+    <diagnostic id="dm-1">Ref-number: 11</diagnostic>
+    <diagnostic id="da-2">Ref-number: 11
 Content: '<value-of select="local-name(.)" />' element can be moved out of 'descgrp' element into a new 'note' element in surrounding '<value-of select="local-name(./../..)" />'</diagnostic>
-<diagnostic id="da-3">Ref-number: 11
+    <diagnostic id="da-3">Ref-number: 11
 Content: '<value-of select="local-name(.)" />' element can be moved out of 'descgrp element into surrounding '<value-of select="local-name(./../..)" />'</diagnostic>
-<diagnostic id="dluoum-1">
-Ref-number: X
-Content: Content goeth here
-</diagnostic>
+    <diagnostic id="didm-1">Ref-number: 12</diagnostic>
+    <diagnostic id="didm-2">Ref-number: 13</diagnostic>
+    <diagnostic id="didm-3">Ref-number: 14</diagnostic>
+    <diagnostic id="didm-5">Ref-number: 16</diagnostic>
+    <diagnostic id="didm-4">Ref-number: 15</diagnostic>
   </diagnostics>
 
 </schema>
