@@ -10,6 +10,7 @@
     <active pattern="descgrp-manual" />
     <active pattern="extent-nonnumeric-manual" />
     <active pattern="did-manual" />
+    <active pattern="tbl-manual" />
   </phase>
 
   <pattern id="extent-nonnumeric-manual">
@@ -93,6 +94,15 @@
 
   </pattern>
 
+  <pattern id="tbl-manual">
+    <rule context="//table">
+      <!-- 'table' element -->
+      <assert test="not(.)" diagnostics="tblm-1">
+        'table' element is deprecated and must be removed.
+      </assert>
+    </rule>
+  </pattern>
+
   <diagnostics>
     <diagnostic id="enm-1">Ref-number: 18
 Content: Value is "<value-of select="." />"</diagnostic>
@@ -106,6 +116,7 @@ Content: '<value-of select="local-name(.)" />' element can be moved out of 'desc
     <diagnostic id="didm-3">Ref-number: 14</diagnostic>
     <diagnostic id="didm-5">Ref-number: 16</diagnostic>
     <diagnostic id="didm-4">Ref-number: 15</diagnostic>
+    <diagnostic id="tblm-1">Ref-number: 25</diagnostic>
   </diagnostics>
 
 </schema>
