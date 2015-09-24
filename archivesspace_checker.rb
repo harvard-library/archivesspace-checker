@@ -29,7 +29,7 @@ class ArchivesspaceChecker < Sinatra::Base
   STRON_REP = stron_xml.xpath('//rule').reduce({}) do |result, rule|
     result[rule.xpath('./comment()').text.strip]  = rule.xpath('./assert').map(&:text).map(&:strip)
     result
-  end
+  end.sort_by {|k,v| k}.to_h
 
   def check_file(f, phase)
     # If phase is other than default, bespoke checker
