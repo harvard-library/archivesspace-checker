@@ -31,7 +31,7 @@
                    //descgrp[@type and @type != 'add']/chronlist|
                    //descgrp[@type and @type != 'add']/list|
                    //descgrp[@type and @type != 'add']/p">
-      <!-- 'descgrp' sub-elements of kinds valid in 'note' -->
+      <!-- 'descgrp' sub-elements of kinds valid in 'note' element -->
       <assert test="not(.)" diagnostics="da-2">'descgrp' is deprecated, and must be removed. 'address', 'blockquote', 'chronlist', 'list', and 'p' children of 'descgrp' must be reparented into a new 'note' in the 'descgrp's parent element</assert>
     </rule>
     <rule context="//descgrp[@type and @type != 'add']/accessrestrict|
@@ -69,7 +69,7 @@
   <pattern id="did-manual">
 
     <rule context="/ead/archdesc/did">
-      <!-- collection-level 'did' -->
+      <!-- 'did' element (collection-level) -->
       <assert test=".[unitid]" diagnostics="didm-1">
         Collection level 'did' element must contain a 'unitid' element.
       </assert>
@@ -86,7 +86,7 @@
     </rule>
 
     <rule context="/ead/archdesc/*[not(local-name(.) = 'did')]//did">
-      <!-- subsidiary 'did' elements -->
+      <!-- 'did' elements (anywhere below collection-level)-->
       <assert test="count(./unitdate|./unittitle) > 0" diagnostics="didm-4">
         'did' elements must contain a either a 'unitdate' element, a 'unittitle' element or both.
       </assert>
@@ -105,7 +105,7 @@
 
   <diagnostics>
     <diagnostic id="enm-1">Ref-number: 18
-Content: Value is "<value-of select="." />"</diagnostic>
+    Content: Value is "<value-of select="." />"</diagnostic>
     <diagnostic id="dm-1">Ref-number: 11</diagnostic>
     <diagnostic id="da-2">Ref-number: 11
 Content: '<value-of select="local-name(.)" />' element can be moved out of 'descgrp' element into a new 'note' element in surrounding '<value-of select="local-name(./../..)" />'</diagnostic>
