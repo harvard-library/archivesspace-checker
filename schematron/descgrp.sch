@@ -32,7 +32,7 @@
                    //descgrp[@type and @type != 'add']/list|
                    //descgrp[@type and @type != 'add']/p">
       <!-- 'descgrp' sub-elements of kinds valid in 'note' element -->
-      <assert test="not(.)" diagnostics="da-2">'descgrp' is deprecated, and must be removed. 'address', 'blockquote', 'chronlist', 'list', and 'p' children of 'descgrp' must be reparented into a new 'note' in the 'descgrp's parent element</assert>
+      <assert test="not(.)" diagnostics="da-2">'descgrp' is deprecated, and must be removed. 'address', 'blockquote', 'chronlist', 'list', and 'p' children of 'descgrp' must be reparented into a new 'note' element in the 'descgrp's parent element</assert>
     </rule>
     <rule context="//descgrp[@type and @type != 'add']/accessrestrict|
                    //descgrp[@type and @type != 'add']/accruals|
