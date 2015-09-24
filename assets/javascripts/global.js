@@ -13,5 +13,5 @@ $(function () {
     $('form').prop('action', new_action);
   });
 
-  $('input[name="format"]:checked').trigger('change');
+  $('input[name="format"]:checked,input[type="file"]').trigger('change');
 });
