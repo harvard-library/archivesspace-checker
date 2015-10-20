@@ -21,11 +21,13 @@ class ArchivesspaceChecker < Sinatra::Base
     'csv' => {name: 'csv', value: 'csv', mime: 'text/csv'}
   }
 
+  SCHEMATRON = IO.read('schematron/archivesspace_checker_sch.xml')
+
   Saxon::Processor.default.config[:line_numbering] = true
 
-  CHECKER = Schematronium.new(IO.read('schematron/descgrp.sch'))
+  CHECKER = Schematronium.new(SCHEMATRON)
 
-  stron_xml = Nokogiri::XML(IO.read('schematron/descgrp.sch')).remove_namespaces!
+  stron_xml = Nokogiri::XML(SCHEMATRON).remove_namespaces!
   STRON_REP = stron_xml.xpath('//rule').reduce({}) do |result, rule|
     result[rule.xpath('./comment()').text.strip]  = rule.xpath('./assert').map(&:text).map(&:strip)
     result
@@ -33,7 +35,7 @@ class ArchivesspaceChecker < Sinatra::Base
 
   def check_file(f, phase)
     # If phase is other than default, bespoke checker
-    checker = (phase == "'#ALL'") ? CHECKER : Schematronium.new(IO.read('schematron/descgrp.sch'), phase)
+    checker = (phase == "'#ALL'") ? CHECKER : Schematronium.new(SCHEMATRON, phase)
     s_xml = Saxon.XML(f)
     xml = checker.check(s_xml.to_s)
     xml.remove_namespaces!
@@ -92,5 +94,10 @@ class ArchivesspaceChecker < Sinatra::Base
 
   get "/possible-errors" do
     haml :possible_errors
+  end
+
+  get "schematron.xml" do
+    headers "Content-Type" => "application/xml; charset=utf8"
+    SCHEMATRON
   end
 end
