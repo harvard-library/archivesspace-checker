@@ -77,7 +77,7 @@
       <assert test=".[unittitle]" diagnostics="didm-2">
         Collection level 'did' element must contain a 'unittitle' element.
       </assert>
-      <assert test=".[unitdate]" diagnostics="didm-3">
+      <assert test=".[unitdate or unittitle/unitdate]" diagnostics="didm-3">
         Collection level 'did' element must contain a 'unitdate' element.
       </assert>
       <assert test=".[physdesc/extent]" diagnostics="didm-5">
