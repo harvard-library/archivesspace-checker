@@ -74,14 +74,24 @@
         Collection level 'did' element must contain a 'unitid' element.
       </assert>
 
-      <assert test=".[unittitle]" diagnostics="didm-2">
+      <assert test=".[normalize-space(unitid/text())]" diagnostics="didm-1a">
+        Collection level 'unitid' element must not be empty.
+      </assert>
+
+      <assert test="./unittitle/text()[normalize-space(.)]" diagnostics="didm-2">
         Collection level 'did' element must contain a 'unittitle' element.
       </assert>
+
       <assert test=".[unitdate or unittitle/unitdate]" diagnostics="didm-3">
         Collection level 'did' element must contain a 'unitdate' element.
       </assert>
+
       <assert test=".[physdesc/extent]" diagnostics="didm-5">
         Collection level 'did' element must contain 'physdesc' element with 'extent' child.
+      </assert>
+
+      <assert test=".[normalize-space(physdesc/extent/text())]" diagnostics="didm-5a">
+        Collection level 'physdesc/extent' element must not be empty.
       </assert>
     </rule>
 
@@ -112,9 +122,11 @@ Content: '<value-of select="local-name(.)" />' element can be moved out of 'desc
     <diagnostic id="da-3">Ref-number: 11
 Content: '<value-of select="local-name(.)" />' element can be moved out of 'descgrp element into surrounding '<value-of select="local-name(./../..)" />'</diagnostic>
     <diagnostic id="didm-1">Ref-number: 12</diagnostic>
+    <diagnostic id="didm-1a">Ref-number: 12</diagnostic>
     <diagnostic id="didm-2">Ref-number: 13</diagnostic>
     <diagnostic id="didm-3">Ref-number: 14</diagnostic>
     <diagnostic id="didm-5">Ref-number: 16</diagnostic>
+    <diagnostic id="didm-5a">Ref-number: 16</diagnostic>
     <diagnostic id="didm-4">Ref-number: 15</diagnostic>
     <diagnostic id="tblm-1">Ref-number: 25</diagnostic>
   </diagnostics>
