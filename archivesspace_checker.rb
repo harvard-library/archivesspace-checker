@@ -121,7 +121,7 @@ class ArchivesspaceChecker < Sinatra::Base
     haml :possible_errors
   end
 
-  get "schematron.xml" do
+  get "/schematron.xml" do
     headers "Content-Type" => "application/xml; charset=utf8"
     SCHEMATRON
   end
