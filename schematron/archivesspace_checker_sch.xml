@@ -75,11 +75,7 @@
         Collection level 'did' element must contain a 'unitid' element.
       </assert>
 
-      <assert test=".[normalize-space(unitid/text())]" diagnostics="didm-1a">
-        Collection level 'unitid' element must not be empty.
-      </assert>
-
-      <assert test="./unittitle/text()[normalize-space(.)]" diagnostics="didm-2">
+      <assert test=".[unittitle]" diagnostics="didm-2">
         Collection level 'did' element must contain a 'unittitle' element.
       </assert>
 
@@ -91,15 +87,41 @@
         Collection level 'did' element must contain 'physdesc' element with 'extent' child.
       </assert>
 
-      <assert test=".[normalize-space(physdesc/extent/text())]" diagnostics="didm-5a">
-        Collection level 'physdesc/extent' element must not be empty.
-      </assert>
     </rule>
 
     <rule context="/ead/archdesc/*[not(local-name(.) = 'did')]//did">
       <!-- 'did' elements (anywhere below collection-level)-->
       <assert test="count(./unitdate|./unittitle) > 0" diagnostics="didm-4">
         'did' elements must contain a either a 'unitdate' element, a 'unittitle' element or both.
+      </assert>
+    </rule>
+
+    <rule context="/ead/archdesc/did/unitid">
+      <!-- 'unitid' element (collection-level) -->
+      <assert test="./text()[normalize-space(.)]" diagnostics="didm-1a">
+        Collection level 'unitid' element must not be empty.
+      </assert>
+    </rule>
+
+    <rule context="/ead/archdesc/did/unittitle">
+      <!-- 'unittitle' element (collection-level) -->
+      <assert test="./text()[normalize-space(.)]" diagnostics="didm-2a">
+        Collection level 'unittitle' element must not be empty.
+      </assert>
+    </rule>
+
+    <rule context="/ead/archdesc/did/unitdate|
+                   /ead/archdesc/did/unittitle/unitdate">
+      <!-- 'unitdate' element (collection-level) -->
+      <assert test="./text()[normalize-space(.)]" diagnostics="didm-3a">
+        Collection level 'unitdate' element must not be empty.
+      </assert>
+    </rule>
+
+    <rule context="/ead/archdesc/did/physdesc/extent">
+      <!-- 'physdesc/extent' element (collection-level) -->
+      <assert test="./text()[normalize-space(.)]" diagnostics="didm-5a">
+        Collection level 'physdesc/extent' element must not be empty.
       </assert>
     </rule>
 
@@ -125,6 +147,7 @@ Content: '<value-of select="local-name(.)" />' element can be moved out of 'desc
     <diagnostic id="didm-1">Ref-number: 12</diagnostic>
     <diagnostic id="didm-1a">Ref-number: 12</diagnostic>
     <diagnostic id="didm-2">Ref-number: 13</diagnostic>
+    <diagnostic id="didm-2a">Ref-number: 13</diagnostic>
     <diagnostic id="didm-3">Ref-number: 14</diagnostic>
     <diagnostic id="didm-5">Ref-number: 16</diagnostic>
     <diagnostic id="didm-5a">Ref-number: 16</diagnostic>
