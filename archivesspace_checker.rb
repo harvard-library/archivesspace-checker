@@ -27,9 +27,34 @@ class ArchivesspaceChecker < Sinatra::Base
 
   CHECKER = Schematronium.new(SCHEMATRON)
 
+  class RuleKeyStr < Delegator
+    attr_writer :manual
+
+    def initialize(obj)
+      super
+      @str = obj
+      @manual = nil
+    end
+
+    def manual?
+      @manual
+    end
+
+    def __getobj__
+      @str
+    end
+
+    def __setobj__(obj)
+      @str = obj
+    end
+  end
+
+
   stron_xml = Nokogiri::XML(SCHEMATRON).remove_namespaces!
   STRON_REP = stron_xml.xpath('//rule').reduce({}) do |result, rule|
-    result[rule.xpath('./comment()').text.strip]  = rule.xpath('./assert').map(&:text).map(&:strip)
+    key = RuleKeyStr.new(rule.xpath('./comment()').text.strip)
+    key.manual = rule.ancestors('pattern').first['id'].match(/-manual\Z/)
+    result[key] = rule.xpath('./assert').map(&:text).map(&:strip)
     result
   end.sort_by {|k,v| k}.to_h
 

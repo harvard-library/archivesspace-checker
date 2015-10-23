@@ -7,7 +7,8 @@
   %tbody
     %tr
       %th Context
-      %th Errors
+      %th Error Description
+      %th Resolution
     - STRON_REP.each_pair do |k,v|
       %tr
         %td= k
@@ -15,3 +16,4 @@
           %ul
             - v.each do |el|
               %li= el
+        %td= (k.manual?) ? 'manual' : 'auto'
