@@ -55,7 +55,8 @@
                    //descgrp[@type and @type != 'add']/processinfo|
                    //descgrp[@type and @type != 'add']/userestrict">
       <!-- 'descgrp' sub-elements of kinds valid outside of 'note' -->
-      <assert test="not(.)" diagnostics="da-3">'descgrp' is deprecated, and must be removed. Element children of various types must be reparented into 'descgrp's parent element</assert>
+      <assert test="not(.)" diagnostics="da-3">'descgrp' is deprecated, and must be removed. Element children of the following types must be reparented into 'descgrp's parent element:
+      'accessrestrict', 'accruals', 'acquinfo', 'altformavail', 'appraisal', 'custodhist', 'note', 'prefercite', 'processinfo', 'userestrict', 'accessrestrict', 'accruals', 'acquinfo', 'altformavail', 'appraisal', 'custodhist', 'note', 'prefercite', 'processinfo', 'userestrict'</assert>
     </rule>
   </pattern>
 
