@@ -136,6 +136,23 @@
     </rule>
   </pattern>
 
+  <pattern id="date-unitdate-manual">
+    <rule context="//date">
+      <!-- 'date' element -->
+      <assert test="not(.[@startYear or @endYear])" diagnostics="dum-1">
+        'date' element must not contain 'startYear' or 'endYear' attributes.
+      </assert>
+    </rule>
+
+    <rule context="//unitdate">
+      <!-- 'unitdate' element -->
+      <assert test="not(.[@startYear or @endYear])" diagnostics="dum-1">
+        'unitdate' element must not contain 'startYear' or 'endYear' attributes.
+      </assert>
+    </rule>
+  </pattern>
+
+
   <diagnostics>
     <diagnostic id="enm-1">Ref-number: 18
     Content: Value is "<value-of select="." />"</diagnostic>
@@ -153,6 +170,9 @@ Content: '<value-of select="local-name(.)" />' element can be moved out of 'desc
     <diagnostic id="didm-5a">Ref-number: 16</diagnostic>
     <diagnostic id="didm-4">Ref-number: 15</diagnostic>
     <diagnostic id="tblm-1">Ref-number: 25</diagnostic>
+    <diagnostic id="dum-1">Ref-number: 38
+Content: Content from '<value-of select="local-name(.)" />' element's 'startYear' (<value-of select="./@startYear" />) and 'endYear' (<value-of select="./@endYear" />) attributes should be combined into a single 'normal' attribute separated by '/' (<value-of select="./@startYear" />/<value-of select="./@endYear" />)
+    </diagnostic>
   </diagnostics>
 
 </schema>
