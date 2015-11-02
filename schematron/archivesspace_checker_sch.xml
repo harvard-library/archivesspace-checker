@@ -5,12 +5,13 @@
 
   <phase id="automated">
     <active pattern="descgrp-automated" />
+    <active pattern="date-unitdate-automated" />
   </phase>
   <phase id="manual">
     <active pattern="descgrp-manual" />
     <active pattern="extent-nonnumeric-manual" />
     <active pattern="did-manual" />
-    <active pattern="tbl-manual" />
+    <active pattern="table-manual" />
   </phase>
 
   <pattern id="extent-nonnumeric-manual">
@@ -127,7 +128,7 @@
 
   </pattern>
 
-  <pattern id="tbl-manual">
+  <pattern id="table-manual">
     <rule context="//table">
       <!-- 'table' element -->
       <assert test="not(.)" diagnostics="tblm-1">
@@ -136,17 +137,17 @@
     </rule>
   </pattern>
 
-  <pattern id="date-unitdate-manual">
+  <pattern id="date-unitdate-automated">
     <rule context="//date">
       <!-- 'date' element -->
-      <assert test="not(.[@startYear or @endYear])" diagnostics="dum-1">
+      <assert test="not(.[@startYear or @endYear])" diagnostics="dua-1">
         'date' element must not contain 'startYear' or 'endYear' attributes.
       </assert>
     </rule>
 
     <rule context="//unitdate">
       <!-- 'unitdate' element -->
-      <assert test="not(.[@startYear or @endYear])" diagnostics="dum-1">
+      <assert test="not(.[@startYear or @endYear])" diagnostics="dua-1">
         'unitdate' element must not contain 'startYear' or 'endYear' attributes.
       </assert>
     </rule>
@@ -170,7 +171,7 @@ Content: '<value-of select="local-name(.)" />' element can be moved out of 'desc
     <diagnostic id="didm-5a">Ref-number: 16</diagnostic>
     <diagnostic id="didm-4">Ref-number: 15</diagnostic>
     <diagnostic id="tblm-1">Ref-number: 25</diagnostic>
-    <diagnostic id="dum-1">Ref-number: 38
+    <diagnostic id="dua-1">Ref-number: 38
 Content: Content from '<value-of select="local-name(.)" />' element's 'startYear' (<value-of select="./@startYear" />) and 'endYear' (<value-of select="./@endYear" />) attributes should be combined into a single 'normal' attribute separated by '/' (<value-of select="./@startYear" />/<value-of select="./@endYear" />)
     </diagnostic>
   </diagnostics>
