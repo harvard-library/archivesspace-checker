@@ -74,7 +74,7 @@ class ArchivesspaceChecker < Sinatra::Base
   def xml_output(xml, orig_name)
     output = Nokogiri::XML::DocumentFragment.new(Nokogiri::XML::Document.new)
     file = output.add_child("<file file_name='#{orig_name}' total_errors='#{xml.count}'/>").first
-    counts = xml.group_by {|el| el.children.map(&:text).join.strip.gsub(/\s+/, ' ')}.map {|k,v| [k,v.count]}.to_h
+    counts = xml.group_by {|el| el.element_children.first.text.strip.gsub(/\s+/, ' ')}.map {|k,v| [k,v.count]}.to_h
     err_count = file.add_child("<error_counts />").first
     counts.each do |k,v|
       err_count.add_child("<message count='#{v}'>#{k}</message>")
