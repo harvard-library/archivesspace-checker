@@ -61,6 +61,7 @@ class ArchivesspaceChecker < Sinatra::Base
   def check_file(f, phase)
     # If phase is other than default, bespoke checker
     checker = (phase == "'#ALL'") ? CHECKER : Schematronium.new(SCHEMATRON, phase)
+
     s_xml = Saxon.XML(f)
     xml = checker.check(s_xml.to_s)
     xml.remove_namespaces!
@@ -114,6 +115,10 @@ class ArchivesspaceChecker < Sinatra::Base
   post "/result.:filetype" do
     headers "Content-Type" => "#{OUTPUT_OPTS[params[:filetype]][:mime]}; charset=utf8"
     up = params['eadFile']
+
+    raise "!DOCTYPE in EAD, disallowed due to XXE vulnerability" unless up[:tempfile].grep(/!DOCTYPE/i).empty?
+    up[:tempfile].rewind
+
     output(params[:filetype], check_file(up[:tempfile], params[:phase]), up[:filename]).to_s
   end
 

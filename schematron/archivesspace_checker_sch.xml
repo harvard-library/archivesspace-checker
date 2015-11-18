@@ -167,6 +167,7 @@ Content: '<value-of select="local-name(.)" />' element can be moved out of 'desc
     <diagnostic id="didm-2">Ref-number: 13</diagnostic>
     <diagnostic id="didm-2a">Ref-number: 13</diagnostic>
     <diagnostic id="didm-3">Ref-number: 14</diagnostic>
+    <diagnostic id="didm-3a">Ref-number: 14</diagnostic>
     <diagnostic id="didm-5">Ref-number: 16</diagnostic>
     <diagnostic id="didm-5a">Ref-number: 16</diagnostic>
     <diagnostic id="didm-4">Ref-number: 15</diagnostic>
