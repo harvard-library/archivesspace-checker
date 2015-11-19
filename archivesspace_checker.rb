@@ -92,8 +92,9 @@ class ArchivesspaceChecker < Sinatra::Base
       csv << [orig_name, xml.count]
       csv << []
       csv << %w|type location line-number message|
+
       xml.each do |el|
-        csv << [el.name, el['location'], el['line-number'], el.xpath('//text').first.content]
+        csv << [el.name, el['location'], el['line-number'], el.xpath('.//text').first.content]
       end
     end
   end
