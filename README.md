@@ -21,3 +21,6 @@ Then direct your browser to localhost:9292, upload some EADs, and enjoy!
 
 ## Contributors
 * [Dave Mayo](https://github.com/pobocks)
+
+## Copyright
+© 2014 President and Fellows of Harvard College
