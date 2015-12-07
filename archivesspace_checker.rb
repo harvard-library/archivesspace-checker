@@ -25,6 +25,12 @@ class ArchivesspaceChecker < Sinatra::Base
 
   Saxon::Processor.default.config[:line_numbering] = true
 
+  # Disable a bunch of stuff in parser to prevent XXE vulnerabilities
+  parser_options = Saxon::Processor.default.to_java.getUnderlyingConfiguration.parseOptions
+  parser_options.add_parser_feature("http://apache.org/xml/features/disallow-doctype-decl", true)
+  parser_options.add_parser_feature("http://xml.org/sax/features/external-general-entities", false)
+  parser_options.add_parser_feature("http://xml.org/sax/features/external-parameter-entities", false)
+
   CHECKER = Schematronium.new(SCHEMATRON)
 
   class RuleKeyStr < Delegator
@@ -116,9 +122,6 @@ class ArchivesspaceChecker < Sinatra::Base
   post "/result.:filetype" do
     headers "Content-Type" => "#{OUTPUT_OPTS[params[:filetype]][:mime]}; charset=utf8"
     up = params['eadFile']
-
-    raise "!DOCTYPE in EAD, disallowed due to XXE vulnerability" unless up[:tempfile].grep(/!DOCTYPE/i).empty?
-    up[:tempfile].rewind
 
     output(params[:filetype], check_file(up[:tempfile], params[:phase]), up[:filename]).to_s
   end
