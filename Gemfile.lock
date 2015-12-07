@@ -97,6 +97,9 @@ GEM
     uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    yard (0.8.7.6)
+    yard-sinatra (1.0.0)
+      yard (~> 0.7)
 
 PLATFORMS
   java
@@ -122,6 +125,8 @@ DEPENDENCIES
   sinatra-partial
   therubyrhino
   uglifier
+  yard
+  yard-sinatra
 
 BUNDLED WITH
    1.10.6

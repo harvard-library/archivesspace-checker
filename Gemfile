@@ -8,6 +8,8 @@ gem 'sinatra-partial'
 gem 'kramdown'
 gem 'uglifier'
 gem 'therubyrhino'
+gem 'yard'
+gem 'yard-sinatra'
 
 group :development do
   gem 'capistrano'
