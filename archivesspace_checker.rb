@@ -120,10 +120,19 @@ class ArchivesspaceChecker < Sinatra::Base
   end
 
   post "/result.:filetype" do
-    headers "Content-Type" => "#{OUTPUT_OPTS[params[:filetype]][:mime]}; charset=utf8"
-    up = params['eadFile']
+    begin
+      headers "Content-Type" => "#{OUTPUT_OPTS[params[:filetype]][:mime]}; charset=utf8"
+      up = params['eadFile']
 
-    output(params[:filetype], check_file(up[:tempfile], params[:phase]), up[:filename]).to_s
+      output(params[:filetype], check_file(up[:tempfile], params[:phase]), up[:filename]).to_s
+    rescue Java::NetSfSaxonS9api::SaxonApiException => e
+      <<-ERROR.strip
+        <?xml version="1.0" encoding="UTF-8"?>
+        <fatal-error>
+          DOCTYPE decl and/or entity resolution are disallowed for security reasons.
+        </fatal-error>
+      ERROR
+    end
   end
 
   get "/possible-errors" do
