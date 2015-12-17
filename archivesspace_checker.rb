@@ -5,7 +5,7 @@ class ArchivesspaceChecker < Sinatra::Base
 
   # site-specific configuration
   CONFIG = if File.exists?(File.join('config', 'config.yml'))
-               YAML.load_file(File.join('config', 'config.yml')) || {}
+               YAML.safe_load(IO.read(File.join('config', 'config.yml'))) || {}
              else
                {}
              end
