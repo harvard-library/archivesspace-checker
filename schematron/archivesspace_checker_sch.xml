@@ -24,7 +24,7 @@
   <pattern id="descgrp-automated">
     <rule context="//descgrp[@type and @type != 'add']/head">
       <!-- 'head' elements inside 'descgrp' elements -->
-      <assert test="not(.)">'head' element should be dropped from descgrp</assert>
+      <assert test="not(.)" diagnostics="da-1">'head' element should be dropped from descgrp</assert>
     </rule>
 
     <rule context="//descgrp[@type and @type != 'add']/address|
@@ -158,6 +158,7 @@
     <diagnostic id="enm-1">Ref-number: 18
     Content: Value is "<value-of select="." />"</diagnostic>
     <diagnostic id="dm-1">Ref-number: 11</diagnostic>
+    <diagnostic id="da-1">Ref-number: 11</diagnostic>
     <diagnostic id="da-2">Ref-number: 11
 Content: '<value-of select="local-name(.)" />' element can be moved out of 'descgrp' element into a new 'note' element in surrounding '<value-of select="local-name(./../..)" />'</diagnostic>
     <diagnostic id="da-3">Ref-number: 11
