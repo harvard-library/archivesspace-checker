@@ -23,7 +23,7 @@ Then direct your browser to localhost:9292, upload some EADs, and enjoy!
 
 Configuration settings can be included by putting a YAML file at `config/config.yml`
 
-Right now, the only setting checked for is `schematron`, which is the location that 
+Right now, the only setting checked for is `schematron`, which is the location that
 the schematron file being used is located at.
 
 ## Contributors

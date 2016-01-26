@@ -5,3 +5,8 @@
 
 # Asset stuff
 .sass-cache
+
+# Generated docs
+/doc
+/doc/*
+/.yardoc

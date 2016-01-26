@@ -95,7 +95,7 @@ class ArchivesspaceChecker < Sinatra::Base
   # Runs schematron over a particular file
   #
   # If phase argument is provided, constructs checker restricted to that phase.
-  # @param [String] phase
+  # @param [File] f, [String] phase
   def check_file(f, phase)
     # If phase is other than default, bespoke checker
     checker = (phase == "'#ALL'") ? CHECKER : Schematronium.new(SCHEMATRON, phase)
@@ -110,50 +110,53 @@ class ArchivesspaceChecker < Sinatra::Base
     xml
   end
 
-  # Concrete XML output method
-  def xml_output(xml, orig_name)
-    output = Nokogiri::XML::DocumentFragment.new(Nokogiri::XML::Document.new)
-    file = output.add_child("<file file_name='#{orig_name}' total_errors='#{xml.count}'/>").first
+  # Stream XML as generated to out
+  #
+  # @param [Nokogiri::XML::NodeSet] xml results from schematron processing
+  # @param [String] orig_name name of EAD as uploaded
+  # @param [IO] out stream to write output to
+  # @return [nil]
+  def xml_output(xml, orig_name, out)
     counts = xml.group_by {|el| el.element_children.first.text.strip.gsub(/\s+/, ' ')}.map {|k,v| [k,v.count]}.to_h
-    err_count = file.add_child("<error_counts />").first
+
+    out << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+    out << "<file file_name='#{orig_name}' total_errors='#{xml.count}'>\n"
+    out << "<error_counts>\n"
     counts.each do |k,v|
-      err_count.add_child("<message count='#{v}'>#{k}</message>")
+      out << "<message count='#{v}'>#{k}</message>\n"
     end
-    errs = file.add_child("<errors />").first
-    errs.children = xml
+    out << "</error_counts>\n"
+    out << "<errors>\n"
+    xml.each do |n|
+      out << n.to_xml
+    end
+    out << "</errors>\n"
+    out << "</file>"
 
-    output
+    nil # Return value is not for use
   end
 
-  # Concrete CSV output method
-  def csv_output(xml, orig_name)
-    CSV.generate(encoding: 'utf-8') do |csv|
-      csv << %w|filename total_errors|
-      csv << [orig_name, xml.count]
-      csv << []
-      csv << %w|type location line-number message|
+  # Produce CSV output method
+  # @param [Nokogiri::XML::NodeSet] xml results from schematron processing
+  # @param [String] orig_name name of EAD as uploaded
+  # @param [IO] out stream to write output to
+  # @return [nil]
+  def csv_output(xml, orig_name, out)
+    opts = {encoding: 'utf-8'}
+    out << CSV.generate_line(%w|filename total_errors|, opts)
 
-      xml.each do |el|
-        csv << [el.name, el['location'], el['line-number'], el.xpath('.//text').first.content]
-      end
-    end
-  end
+    out << CSV.generate_line( %w|filename total_errors|, opts)
+    out << CSV.generate_line( [orig_name, xml.count], opts)
+    out << CSV.generate_line( [], opts)
+    out << CSV.generate_line( %w|type location line-number message|, opts)
 
-  # Generic output method, delegates to concrete methods
-  #
-  # @see #xml_output
-  # @see #csv_output
-  #
-  # @param [String] fmt Format to be output
-  # @param [Tempfile] xml Uploaded XML file
-  # @param [String] orig_name Original name of XML file as uploaded by user
-  def output(fmt, xml, orig_name)
-    case fmt
-    when 'xml'
-      xml_output(xml, orig_name)
-    when 'csv'
-      csv_output(xml, orig_name)
+    xml.each do |el|
+      out << CSV.generate_line( [el.name,
+                                 el['location'],
+                                 el['line-number'],
+                                 el.xpath('.//text').first.content], opts)
     end
+    return nil
   end
 
   # @!endgroup
@@ -167,19 +170,43 @@ class ArchivesspaceChecker < Sinatra::Base
 
   # Form submissions post to this route, the response is information on errors
   #   in XML or CSV
+  #
+  # Output is streamed, due to issues with using Nokogiri to build large XML response sets.
+  #
+  # @see #xml_output
+  # @see #csv_output
   post "/result.:filetype" do
-    begin
-      headers "Content-Type" => "#{OUTPUT_OPTS[params[:filetype]][:mime]}; charset=utf8"
-      up = params['eadFile']
+    up = params['eadFile']
 
-      output(params[:filetype], check_file(up[:tempfile], params[:phase]), up[:filename]).to_s
+    # If Saxon throws, set headers and just return the response
+    begin
+      result_of_check = check_file(up[:tempfile], params[:phase])
     rescue Java::NetSfSaxonS9api::SaxonApiException => e
-      <<-ERROR.lines.map(&:lstrip).join
+      headers "Content-Type" => "#{OUTPUT_OPTS['xml'][:mime]}; charset=utf8"
+      return <<-ERROR.lines.map(&:lstrip).join
         <?xml version="1.0" encoding="UTF-8"?>
         <fatal-error>
-          DOCTYPE decl and/or entity resolution are disallowed for security reasons.
+          Possible causes include parse error, DOCTYPE declaration, or entity expansion in the EAD file you're checking. DOCTYPE declarations and entity resolution are disallowed for security reasons.
+
+          Original error message:
+
+          #{ e.message.split(/;/).map(&:strip).last(3).join("\n") }
         </fatal-error>
       ERROR
+    end
+    # Stream because otherwise large XML output will blow up the heap
+    headers "Content-Type" => "#{OUTPUT_OPTS[params[:filetype]][:mime]}; charset=utf8"
+    stream do |out|
+      case params[:filetype]
+      when 'xml'
+        xml_output(result_of_check,
+                   up[:filename],
+                   out)
+      when 'csv'
+        csv_output(result_of_check,
+                   up[:filename],
+                   out)
+      end
     end
   end
 
