@@ -26,6 +26,9 @@ Configuration settings can be included by putting a YAML file at `config/config.
 Right now, the only setting checked for is `schematron`, which is the location that
 the schematron file being used is located at.
 
+## Developer Documentation
+Documentation generated via YARD is available [here](http://harvard-library.github.io/archivesspace-checker).
+
 ## Contributors
 * [Dave Mayo](https://github.com/pobocks)
 
