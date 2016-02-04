@@ -95,7 +95,8 @@ class ArchivesspaceChecker < Sinatra::Base
   # Runs schematron over a particular file
   #
   # If phase argument is provided, constructs checker restricted to that phase.
-  # @param [File] f, [String] phase
+  # @param [File] f a file to check
+  # @param [String] phase schematron phase to be run
   def check_file(f, phase)
     # If phase is other than default, bespoke checker
     checker = (phase == "'#ALL'") ? CHECKER : Schematronium.new(SCHEMATRON, phase)
