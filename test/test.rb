@@ -44,6 +44,16 @@ class ArchivesspaceChecker::Test < Minitest::Test
     assert last_response.body.index('filename,total_errors'), 'CSV output is wrong'
   end
 
+  def test_checks_errors_regardless_of_namespace
+    post '/result.xml', 'eadFile' => Rack::Test::UploadedFile.new('test/data/ns_problems.xml', 'text/xml'), 'phase' => "'#ALL'"
+    assert last_request.env["CONTENT_TYPE"].include?("multipart/form-data"), "didn't set multipart/form-data"
+    tmpfile = last_request.POST["eadFile"][:tempfile]
+    assert tmpfile.is_a?(::Tempfile), "no tempfile"
+    assert last_response.ok?, "Response not ok"
+    assert(Integer(Nokogiri.XML(last_response.body).xpath('//file').first['total_errors'], 10) > 0,
+           'Errors should be found in this XML file')
+  end
+
   def test_refuses_doctype
     puts "\n\nPlease ignore this Saxon output\n\n"
     post '/result.xml', "eadFile" => Rack::Test::UploadedFile.new('test/data/doctype.xml', 'text/xml'), 'phase' => "'#ALL'"
