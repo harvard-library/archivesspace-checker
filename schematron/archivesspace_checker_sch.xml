@@ -72,19 +72,19 @@
 
     <rule context="/*:ead/*:archdesc/*:did">
       <!-- 'did' element (collection-level) -->
-      <assert test=".[unitid]" diagnostics="didm-1">
+      <assert test=".[*:unitid]" diagnostics="didm-1">
         Collection level 'did' element must contain a 'unitid' element.
       </assert>
 
-      <assert test=".[unittitle]" diagnostics="didm-2">
+      <assert test=".[*:unittitle]" diagnostics="didm-2">
         Collection level 'did' element must contain a 'unittitle' element.
       </assert>
 
-      <assert test=".[unitdate or unittitle/unitdate]" diagnostics="didm-3">
+      <assert test=".[*:unitdate or *:unittitle/*:unitdate]" diagnostics="didm-3">
         Collection level 'did' element must contain a 'unitdate' element.
       </assert>
 
-      <assert test=".[physdesc/extent]" diagnostics="didm-5">
+      <assert test=".[*:physdesc/*:extent]" diagnostics="didm-5">
         Collection level 'did' element must contain 'physdesc' element with 'extent' child.
       </assert>
 
