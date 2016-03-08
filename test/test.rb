@@ -2,7 +2,6 @@ require './config/environment'
 Bundler.require(:test)
 
 require 'minitest/autorun'
-require 'stringio'
 
 class ArchivesspaceChecker::Test < Minitest::Test
   include Rack::Test::Methods
@@ -55,9 +54,10 @@ class ArchivesspaceChecker::Test < Minitest::Test
   end
 
   def test_refuses_doctype
-    puts "\n\nPlease ignore this Saxon output\n\n"
-    post '/result.xml', "eadFile" => Rack::Test::UploadedFile.new('test/data/doctype.xml', 'text/xml'), 'phase' => "'#ALL'"
-    puts "\nSaxon output ends here\n\n"
+    out, err = capture_subprocess_io do
+      post '/result.xml', "eadFile" => Rack::Test::UploadedFile.new('test/data/doctype.xml', 'text/xml'), 'phase' => "'#ALL'"
+    end
+    assert err.match(/SXXP0003/), "Did not find expected Saxon-level error in STDERR"
     assert last_response.ok?, 'Response not ok'
     assert last_response.body.index('fatal-error'), 'XML with DOCTYPE declaration must return error'
   end

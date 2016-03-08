@@ -1,6 +1,7 @@
 Bundler.require(:default, :assets)
 require 'csv'
 require 'yaml'
+
 if ENV['RACK_ENV'] == 'development'
   Bundler.require(:development)
 end
