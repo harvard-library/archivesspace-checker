@@ -6,6 +6,8 @@
   <phase id="automated">
     <active pattern="descgrp-automated" />
     <active pattern="date-unitdate-automated" />
+    <active pattern="container-automated" />
+    <active pattern="dao-automated" />
   </phase>
   <phase id="manual">
     <active pattern="descgrp-manual" />
@@ -36,16 +38,6 @@
       <assert test="not(.)" diagnostics="da-2">'descgrp' is deprecated, and must be removed. 'address', 'blockquote', 'chronlist', 'list', and 'p' children of 'descgrp' must be reparented into a new 'note' element in the 'descgrp's parent element</assert>
     </rule>
     <rule context="//*:descgrp[@type and @type != 'add']/*:accessrestrict|
-                   //*:descgrp[@type and @type != 'add']/*:accruals|
-                   //*:descgrp[@type and @type != 'add']/*:acquinfo|
-                   //*:descgrp[@type and @type != 'add']/*:altformavail|
-                   //*:descgrp[@type and @type != 'add']/*:appraisal|
-                   //*:descgrp[@type and @type != 'add']/*:custodhist|
-                   //*:descgrp[@type and @type != 'add']/*:note|
-                   //*:descgrp[@type and @type != 'add']/*:prefercite|
-                   //*:descgrp[@type and @type != 'add']/*:processinfo|
-                   //*:descgrp[@type and @type != 'add']/*:userestrict|
-                   //*:descgrp[@type and @type != 'add']/*:accessrestrict|
                    //*:descgrp[@type and @type != 'add']/*:accruals|
                    //*:descgrp[@type and @type != 'add']/*:acquinfo|
                    //*:descgrp[@type and @type != 'add']/*:altformavail|
@@ -153,6 +145,23 @@
     </rule>
   </pattern>
 
+  <pattern id="container-automated">
+    <rule context="//*:container">
+      <!-- 'container' element -->
+      <assert test=".[@type]" diagnostics="ca-1">
+        'container' element must contain 'type' attribute.
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="dao-automated">
+    <rule context="//*:dao">
+      <!-- 'dao' element -->
+      <assert test=".[not(@xlink:title)]" diagnostics="dao-1">
+        'dao' element must contain 'xlink:title' attribute.
+      </assert>
+    </rule>
+  </pattern>
 
   <diagnostics>
     <diagnostic id="enm-1">Ref-number: 18
@@ -176,6 +185,8 @@ Content: '<value-of select="local-name(.)" />' element can be moved out of 'desc
     <diagnostic id="dua-1">Ref-number: 38
 Content: Content from '<value-of select="local-name(.)" />' element's 'startYear' (<value-of select="./@startYear" />) and 'endYear' (<value-of select="./@endYear" />) attributes should be combined into a single 'normal' attribute separated by '/' (<value-of select="./@startYear" />/<value-of select="./@endYear" />)
     </diagnostic>
+    <diagnostic id="ca-1">Ref-number: 17</diagnostic>
+    <diagnostic id="dao-1">Ref-number: 9</diagnostic>
   </diagnostics>
 
 </schema>
