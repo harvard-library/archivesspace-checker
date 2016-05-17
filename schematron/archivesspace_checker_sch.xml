@@ -157,7 +157,7 @@
   <pattern id="dao-automated">
     <rule context="//*:dao">
       <!-- 'dao' element -->
-      <assert test=".[not(@xlink:title)]" diagnostics="dao-1">
+      <assert test=".[@xlink:title]" diagnostics="dao-1">
         'dao' element must contain 'xlink:title' attribute.
       </assert>
     </rule>
