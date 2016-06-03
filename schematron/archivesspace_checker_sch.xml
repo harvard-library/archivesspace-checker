@@ -39,7 +39,7 @@
     </rule>
     <rule context="//*:descgrp[@type and @type != 'add']/*:accessrestrict|
                    //*:descgrp[@type and @type != 'add']/*:accruals|
-                   //*:descgrp[@type and @type != 'add']/*:acquinfo|
+                   //*:descgrp[@type and @type != 'add']/*:acqinfo|
                    //*:descgrp[@type and @type != 'add']/*:altformavail|
                    //*:descgrp[@type and @type != 'add']/*:appraisal|
                    //*:descgrp[@type and @type != 'add']/*:custodhist|
@@ -49,7 +49,7 @@
                    //*:descgrp[@type and @type != 'add']/*:userestrict">
       <!-- 'descgrp' sub-elements of kinds valid outside of 'note' -->
       <assert test="not(.)" diagnostics="da-3">'descgrp' is deprecated, and must be removed. Element children of the following types must be reparented into 'descgrp's parent element:
-      'accessrestrict', 'accruals', 'acquinfo', 'altformavail', 'appraisal', 'custodhist', 'note', 'prefercite', 'processinfo', 'userestrict', 'accessrestrict', 'accruals', 'acquinfo', 'altformavail', 'appraisal', 'custodhist', 'note', 'prefercite', 'processinfo', 'userestrict'</assert>
+      'accessrestrict', 'accruals', 'acqinfo', 'altformavail', 'appraisal', 'custodhist', 'note', 'prefercite', 'processinfo', 'userestrict'</assert>
     </rule>
   </pattern>
 
