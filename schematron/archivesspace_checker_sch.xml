@@ -8,6 +8,7 @@
     <active pattern="date-unitdate-automated" />
     <active pattern="container-automated" />
     <active pattern="dao-automated" />
+    <active pattern="any-automated" />
   </phase>
   <phase id="manual">
     <active pattern="descgrp-manual" />
@@ -163,6 +164,15 @@
     </rule>
   </pattern>
 
+  <pattern id="any-automated">
+    <rule context="//*">
+      <!-- Any element ('//*') -->
+      <assert test=".[node() or @*]" diagnostics="noempty-1">
+        Any element must contain either text, element, or attribute content.
+      </assert>
+    </rule>
+  </pattern>
+
   <diagnostics>
     <diagnostic id="enm-1">Ref-number: 18
     Content: Value is "<value-of select="." />"</diagnostic>
@@ -187,6 +197,9 @@ Content: Content from '<value-of select="local-name(.)" />' element's 'startYear
     </diagnostic>
     <diagnostic id="ca-1">Ref-number: 17</diagnostic>
     <diagnostic id="dao-1">Ref-number: 9</diagnostic>
+    <diagnostic id="noempty-1">Ref-number: 46
+Content: '<value-of select="local-name(.)" />' element should not be empty
+    </diagnostic>
   </diagnostics>
 
 </schema>
