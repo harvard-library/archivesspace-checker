@@ -10,6 +10,7 @@
     <active pattern="dao-automated" />
     <active pattern="any-automated" />
     <active pattern="c-automated" />
+    <active pattern="note-automated" />
   </phase>
   <phase id="manual">
     <active pattern="descgrp-manual" />
@@ -183,6 +184,24 @@
     </rule>
   </pattern>
 
+  <pattern id="note-automated">
+    <rule context="//*:note">
+      <!-- 'note' element -->
+      <assert test="not(./ancestor::*/controlaccess)" diagnostics="note-1">
+        'controlaccess' elements cannot contain 'note' elements.
+      </assert>
+      <assert test="../local-name() != 'archdesc'" diagnostics="note-2">
+        'archdesc' elements cannot contain 'note' elements. 'note' elements should be converted to 'odd' elements.
+      </assert>
+      <assert test="../local-name() != 'c'" diagnostics="note-3">
+        'c' and 'archdesc' elements cannot contain 'note' elements. 'note' elements should be converted to 'odd' elements.
+      </assert>
+      <assert test="local-name(..) != 'did'" diagnostics="note-4">
+        'did' element cannot contain 'note' elements.  'note' elements should be converted to 'odd' elements, which should be moved out of their parent 'did' elements and inserted as a following sibling of same.
+      </assert>
+    </rule>
+  </pattern>
+
   <diagnostics>
     <diagnostic id="enm-1">Ref-number: 18
     Content: Value is "<value-of select="." />"</diagnostic>
@@ -211,6 +230,10 @@ Content: Content from '<value-of select="local-name(.)" />' element's 'startYear
 Content: '<value-of select="local-name(.)" />' element should not be empty
     </diagnostic>
     <diagnostic id="c-1">Ref-number: 44</diagnostic>
+    <diagnostic id="note-1">Ref-number: 23.1</diagnostic>
+    <diagnostic id="note-2">Ref-number: 23.2</diagnostic>
+    <diagnostic id="note-3">Ref-number: 23.3</diagnostic>
+    <diagnostic id="note-4">Ref-number: 23.4</diagnostic>
   </diagnostics>
 
 </schema>
