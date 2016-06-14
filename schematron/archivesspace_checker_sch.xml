@@ -133,17 +133,10 @@
   </pattern>
 
   <pattern id="date-unitdate-automated">
-    <rule context="//*:date">
-      <!-- 'date' element -->
+    <rule context="//*:date|//*:unitdate">
+      <!-- 'date' and 'unitdate' elements -->
       <assert test="not(.[@startYear or @endYear])" diagnostics="dua-1">
-        'date' element must not contain 'startYear' or 'endYear' attributes.
-      </assert>
-    </rule>
-
-    <rule context="//*:unitdate">
-      <!-- 'unitdate' element -->
-      <assert test="not(.[@startYear or @endYear])" diagnostics="dua-1">
-        'unitdate' element must not contain 'startYear' or 'endYear' attributes.
+        'date' and 'unitdate' elements must not contain 'startYear' or 'endYear' attributes.
       </assert>
     </rule>
   </pattern>
