@@ -11,6 +11,7 @@
     <active pattern="any-automated" />
     <active pattern="c-automated" />
     <active pattern="note-automated" />
+    <active pattern="unitdate-automated" />
   </phase>
   <phase id="manual">
     <active pattern="descgrp-manual" />
@@ -138,6 +139,10 @@
       <assert test="not(.[@startYear or @endYear])" diagnostics="dua-1">
         'date' and 'unitdate' elements must not contain 'startYear' or 'endYear' attributes.
       </assert>
+
+      <assert test="normalize-space(string-join(./@startYear | ./@endYear | ./@normal | ./text(), ''))" diagnostics="noempty-2">
+        'date' and 'unitdate' elements must contain a value in either or both of their 'normal' attribute or their text content.
+      </assert>
     </rule>
   </pattern>
 
@@ -195,6 +200,16 @@
     </rule>
   </pattern>
 
+  <pattern id="unitdate-automated">
+    <rule context="//*:unitdate">
+      <!-- 'unitdate' element -->
+      <assert test="(matches(./text(), 'ca|circa|approx|approximately', 'i') and @certainty = 'approximate') or (not(matches(./text(), 'ca|circa|approx|approximately', 'i')) and @certainty != 'approximate')"
+              diagnostics="dua-2">
+        'date' and 'unitdate' containing approximation language must carry 'certainty' attribute with value 'approximate'.
+      </assert>
+    </rule>
+  </pattern>
+
   <diagnostics>
     <diagnostic id="enm-1">Ref-number: 18
     Content: Value is "<value-of select="." />"</diagnostic>
@@ -227,6 +242,8 @@ Content: '<value-of select="local-name(.)" />' element should not be empty
     <diagnostic id="note-2">Ref-number: 23.2</diagnostic>
     <diagnostic id="note-3">Ref-number: 23.3</diagnostic>
     <diagnostic id="note-4">Ref-number: 23.4</diagnostic>
+    <diagnostic id="noempty-2">Ref-number: 46</diagnostic>
+    <diagnostic id="dua-2">Ref-number: 47</diagnostic>
   </diagnostics>
 
 </schema>
