@@ -27,29 +27,29 @@
   </pattern>
 
   <pattern id="descgrp-automated">
-    <rule context="//*:descgrp[@type and @type != 'add']/*:head">
+    <rule context="//*:descgrp/*:head">
       <!-- 'head' elements inside 'descgrp' elements -->
       <assert test="not(.)" diagnostics="da-1">'head' element should be dropped from descgrp</assert>
     </rule>
 
-    <rule context="//*:descgrp[@type and @type != 'add']/*:address|
-                   //*:descgrp[@type and @type != 'add']/*:blockquote|
-                   //*:descgrp[@type and @type != 'add']/*:chronlist|
-                   //*:descgrp[@type and @type != 'add']/*:list|
-                   //*:descgrp[@type and @type != 'add']/*:p">
+    <rule context="//*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:address|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:blockquote|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:chronlist|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:list|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:p">
       <!-- 'descgrp' sub-elements of kinds valid in 'note' element -->
       <assert test="not(.)" diagnostics="da-2">'descgrp' is deprecated, and must be removed. 'address', 'blockquote', 'chronlist', 'list', and 'p' children of 'descgrp' must be reparented into a new 'note' element in the 'descgrp's parent element</assert>
     </rule>
-    <rule context="//*:descgrp[@type and @type != 'add']/*:accessrestrict|
-                   //*:descgrp[@type and @type != 'add']/*:accruals|
-                   //*:descgrp[@type and @type != 'add']/*:acqinfo|
-                   //*:descgrp[@type and @type != 'add']/*:altformavail|
-                   //*:descgrp[@type and @type != 'add']/*:appraisal|
-                   //*:descgrp[@type and @type != 'add']/*:custodhist|
-                   //*:descgrp[@type and @type != 'add']/*:note|
-                   //*:descgrp[@type and @type != 'add']/*:prefercite|
-                   //*:descgrp[@type and @type != 'add']/*:processinfo|
-                   //*:descgrp[@type and @type != 'add']/*:userestrict">
+    <rule context="//*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:accessrestrict|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:accruals|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:acqinfo|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:altformavail|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:appraisal|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:custodhist|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:note|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:prefercite|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:processinfo|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodingAnalog = '544')]/*:userestrict">
       <!-- 'descgrp' sub-elements of kinds valid outside of 'note' -->
       <assert test="not(.)" diagnostics="da-3">'descgrp' is deprecated, and must be removed. Element children of the following types must be reparented into 'descgrp's parent element:
       'accessrestrict', 'accruals', 'acqinfo', 'altformavail', 'appraisal', 'custodhist', 'note', 'prefercite', 'processinfo', 'userestrict'</assert>
