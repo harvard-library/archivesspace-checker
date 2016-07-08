@@ -140,7 +140,7 @@
         'date' and 'unitdate' elements must not contain 'startYear' or 'endYear' attributes.
       </assert>
 
-      <assert test="normalize-space(string-join(./@startYear | ./@endYear | ./@normal | ./text(), ''))" diagnostics="noempty-2">
+      <assert test="normalize-space(string-join((./@startYear, ./@endYear, ./@normal, ./text()), ''))" diagnostics="noempty-2">
         'date' and 'unitdate' elements must contain a value in either or both of their 'normal' attribute or their text content.
       </assert>
     </rule>
@@ -203,7 +203,7 @@
   <pattern id="unitdate-automated">
     <rule context="//*:unitdate">
       <!-- 'unitdate' element -->
-      <assert test="(matches(./text(), 'ca|circa|approx|approximately', 'i') and @certainty = 'approximate') or (not(matches(./text(), 'ca|circa|approx|approximately', 'i')) and @certainty != 'approximate')"
+      <assert test="(matches(string-join(./text(), ''), 'ca|circa|approx|approximately', 'i') and @certainty = 'approximate') or (not(matches(string-join(./text(), ''), 'ca|circa|approx|approximately', 'i')) and @certainty != 'approximate')"
               diagnostics="dua-2">
         'date' and 'unitdate' containing approximation language must carry 'certainty' attribute with value 'approximate'.
       </assert>
