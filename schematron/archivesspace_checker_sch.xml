@@ -25,6 +25,7 @@
     <active pattern="extent-nonnumeric-manual" />
     <active pattern="did-manual" />
     <active pattern="table-manual" />
+    <active pattern="change-manual" />
   </phase>
 
   <pattern id="extent-nonnumeric-manual">
@@ -305,6 +306,15 @@
     </rule>
   </pattern>
 
+  <pattern id="change-manual">
+    <rule context="//*:revisiondesc/*:change">
+      <!-- 'change' element in 'revisiondesc' -->
+      <assert test=".[*:date and *:item]" diagnostics="change-1">
+        'revisiondesc/change' element must contain both a date and an item subelement.
+      </assert>
+    </rule>
+  </pattern>
+
   <diagnostics>
     <diagnostic id="enm-1">Ref-number: 18
     Content: Value is "<value-of select="." />"</diagnostic>
@@ -350,6 +360,7 @@ Content: '<value-of select="local-name(.)" />' element should not be empty
     <diagnostic id="identifier-1">Ref-number: 59</diagnostic>
     <diagnostic id="ca-2">Ref-number: 6.2</diagnostic>
     <diagnostic id="bibliography-1">Ref-number: 20.2</diagnostic>
+    <diagnostic id="change-1">Ref-number: 9001</diagnostic>
   </diagnostics>
 
 </schema>
