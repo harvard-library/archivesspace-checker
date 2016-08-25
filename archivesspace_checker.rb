@@ -222,5 +222,8 @@ class ArchivesspaceChecker < Sinatra::Base
     SCHEMATRON
   end
 
+  get '/checkenv' do
+    ENV.keys.grep(/^JRUBY/).map {|k| "#{k}: #{ENV[k]}"}.join("\n")
+  end	
   # @!endgroup
 end
