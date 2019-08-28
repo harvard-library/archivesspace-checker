@@ -30,5 +30,7 @@ end
 
 gem 'sinatra'
 gem 'schematronium', '~> 0.1.0'
+gem 'sprockets', '~> 2.12.5'
+gem 'ffi', '~> 1.9.24'
 gem 'saxon-xslt'
 gem 'nokogiri'
