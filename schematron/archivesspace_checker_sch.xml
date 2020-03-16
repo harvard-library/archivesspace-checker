@@ -96,6 +96,10 @@
         Collection level 'did' element must contain 'physdesc' element with 'extent' child.
       </assert>
 
+      <assert test=".[not(*:container)]" diagnostics="didm-6">
+        Collection level 'did' element must not contain 'container' element.
+      </assert>
+
     </rule>
 
     <rule context="/*:ead/*:archdesc/*[not(local-name(.) = 'did')]//*:did">
@@ -196,7 +200,7 @@
   </pattern>
 
   <pattern id="c-automated">
-    <rule context="//*:c">
+    <rule context="//*:c|//*:c01|//*:c02|//*:c03|//*:c04|//*:c05|//*:c06|//*:c07|//*:c08|//*:c09|//*:c10|//*:c11|//*:c12 ">
       <!-- 'c' element -->
       <assert test=".[(@level and @level != 'otherlevel') or (@level = 'otherlevel' and normalize-space(@otherlevel))]" diagnostics="c-1">
         'c' element must contain a value in its 'level' attribute.  If that value is 'otherlevel', the 'c' must also contain an 'otherlevel' attribute.
@@ -259,7 +263,7 @@
     <rule context="//*:unittitle">
       <!-- 'unittitle' elements -->
       <assert test="not(./@id = //*:ref/@target)" diagnostics="unittitle-2">
-        'ref' elements must not point at 'unititle' elements.  'target' attribute should be rewritten to point at parent 'c'.
+        'ref' elements must not point at 'unittitle' elements.  'target' attribute should be rewritten to point at parent 'c'.
       </assert>
 
       <assert test="not(.//*:unitdate)" diagnostics="unittitle-3">
@@ -377,6 +381,9 @@ Content: '<value-of select="local-name(.)" />' element can be moved out of 'desc
     <diagnostic id="didm-3a">Ref-number: 14</diagnostic>
     <diagnostic id="didm-5">Ref-number: 16</diagnostic>
     <diagnostic id="didm-5a">Ref-number: 16</diagnostic>
+    <diagnostic id="didm-6">Ref-number: 9001
+Content: 'container' elements should not be nested within the 'did' in the 'archdesc'.
+    </diagnostic>
     <diagnostic id="didm-4">Ref-number: 15</diagnostic>
     <diagnostic id="tblm-1">Ref-number: 25</diagnostic>
     <diagnostic id="dua-1">Ref-number: 38
