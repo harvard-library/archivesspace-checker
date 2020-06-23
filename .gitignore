@@ -10,3 +10,7 @@
 /doc
 /doc/*
 /.yardoc
+
+.ruby-version
+.rakeTasks
+/.idea

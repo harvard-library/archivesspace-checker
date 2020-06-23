@@ -4,16 +4,34 @@ This is a small website intended to allow Harvard Archivists to check their EAD 
 
 ## System Requirements
 
-* JRuby 9000
-* Bundler
+* JRuby 9.2.11
+* JDK 13
+* Bundler 2.1.4
 
 ## Installation Instructions
 
 ```sh
-git clone git@github.com:harvard-library/archivesspace-checker.git
+git clone git@github.com:UNC-Libraries/archivesspace-checker.git
 cd archivesspace-checker
+```
+
+Install jruby using rvm:
+```sh
+rvm list known
+rvm install jruby-9.2.11.1
+rvm --ruby-version use jruby-9.2.11.1
+```
+
+Set JAVA_HOME:
+
+Get java.home from: ```java -XshowSettings:properties -version```
+```sh
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-13.jdk/Contents/Home
+```
+
+Install gems:
+```sh
 bundle
-bundle exec rake assets:precompile
 bundle exec rackup
 ```
 
@@ -25,6 +43,14 @@ Configuration settings can be included by putting a YAML file at `config/config.
 
 Right now, the only setting checked for is `schematron`, which is the location that
 the schematron file being used is located at.
+
+## Tests
+
+Run automated tests:
+
+```sh
+bundle exec rake test
+```
 
 ### Large Finding Aids
 

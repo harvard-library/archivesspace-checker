@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2">
+  <ns uri="http://www.w3.org/1999/xlink" prefix="xlink"/>
+  <ns uri="urn:isbn:1-931666-22-9" prefix="ead"/>
+
+  <phase id="automated">
+    <active pattern="unittitle-automated" />
+  </phase>
+  <phase id="manual">
+  </phase>
+
+  <pattern id="unittitle-automated">
+    <rule context="//*:unittitle">
+      <!-- 'unittitle' elements -->
+      <assert test="not(.//*:unitdate)" diagnostics="unittitle-3">
+        'unitdate' elements nested inside 'unittitle' elements will be pulled out by ArchivesSpace, and thus leave gaps in their parent's content.  Suggest copying 'unitdate' content directly into parent element, and moving 'unitdate' to following-sibling position relative to its enclosing 'unitdate'.
+      </assert>
+    </rule>
+  </pattern>
+
+  <diagnostics>
+    <diagnostic id="unittitle-3">Ref-number: 40</diagnostic>
+  </diagnostics>
+
+</schema>

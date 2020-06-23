@@ -10,11 +10,6 @@ class ArchivesspaceChecker < Sinatra::Base
                {}
              end
 
-  set :assets_precompile, %w(application.js application.css *.png *.jpg)
-  set :assets_css_compressor, :scss
-  set :assets_js_compressor, :uglifier
-
-  register Sinatra::AssetPipeline
   register Sinatra::Partial
 
   set :haml, :format => :html5
@@ -144,8 +139,6 @@ class ArchivesspaceChecker < Sinatra::Base
   # @return [nil]
   def csv_output(xml, orig_name, out)
     opts = {encoding: 'utf-8'}
-    out << CSV.generate_line(%w|filename total_errors|, opts)
-
     out << CSV.generate_line( %w|filename total_errors|, opts)
     out << CSV.generate_line( [orig_name, xml.count], opts)
     out << CSV.generate_line( [], opts)
