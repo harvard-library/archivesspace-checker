@@ -89,15 +89,10 @@ class ArchivesspaceChecker < Sinatra::Base
 
   # Runs schematron over a particular file
   #
-  # If phase argument is provided, constructs checker restricted to that phase.
   # @param [File] f a file to check
-  # @param [String] phase schematron phase to be run
-  def check_file(f, phase)
-    # If phase is other than default, bespoke checker
-    checker = (phase == "'#ALL'") ? CHECKER : Schematronium.new(SCHEMATRON, phase)
-
+  def check_file(f)
     s_xml = Saxon.XML(f)
-    xml = checker.check(s_xml.to_s)
+    xml = CHECKER.check(s_xml.to_s)
     xml.remove_namespaces!
     xml = xml.xpath("//failed-assert") + xml.xpath("//successful-report")
     xml.each do |el|
@@ -174,7 +169,7 @@ class ArchivesspaceChecker < Sinatra::Base
 
     # If Saxon throws, set headers and just return the response
     begin
-      result_of_check = check_file(up[:tempfile], params[:phase])
+      result_of_check = check_file(up[:tempfile])
     rescue Java::NetSfSaxonS9api::SaxonApiException => e
       headers "Content-Type" => "#{OUTPUT_OPTS['xml'][:mime]}; charset=utf8"
       return <<-ERROR.lines.map(&:lstrip).join

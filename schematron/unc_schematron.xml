@@ -4,22 +4,280 @@
   <ns uri="urn:isbn:1-931666-22-9" prefix="ead"/>
 
   <phase id="automated">
-    <active pattern="unittitle-automated" />
   </phase>
   <phase id="manual">
+    <active pattern="date-unitdate-manual" />
+    <active pattern="container-manual" />
+    <active pattern="dao-manual" />
+    <active pattern="unitid-manual" />
+    <active pattern="unittitle-manual" />
+    <active pattern="daogrp-manual" />
+    <active pattern="namegrp-manual" />
+    <active pattern="name-manual" />
+    <active pattern="identifier-manual" />
+    <active pattern="bibliography-manual" />
+    <active pattern="ptrgrp-manual" />
+    <active pattern="descgrp-manual" />
+    <active pattern="extent-nonnumeric-manual" />
+    <active pattern="did-manual" />
+    <active pattern="table-manual" />
+    <active pattern="change-manual" />
   </phase>
 
-  <pattern id="unittitle-automated">
+  <pattern id="extent-nonnumeric-manual">
+    <rule context="//*:extent">
+      <!-- 'extent' elements -->
+      <assert test="matches(., '^\s*[0123456789.]')" diagnostics="enm-1">'extent' element content should not start with non-numeric character except '.'.</assert>
+    </rule>
+  </pattern>
+
+  <pattern id="descgrp-manual">
+
+    <rule context="//*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:address|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:blockquote|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:chronlist|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:list|
+                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:p">
+      <!-- 'descgrp' sub-elements of kinds valid in 'note' element -->
+      <assert test="not(.)" diagnostics="da-2">'descgrp' is deprecated, and must be removed. 'address', 'blockquote', 'chronlist', 'list', and 'p' children of 'descgrp' must be reparented into a new 'note' element in the 'descgrp's parent element</assert>
+    </rule>
+  </pattern>
+
+  <pattern id="descgrp-manual">
+    <rule context="//*:descgrp[@type]">
+      <!-- 'descgrp' elements with type 'add' -->
+      <assert test="not(@type='add')">'descgrp' is deprecated, and must be removed. 'descgrp' element with type 'add' requires manual review and intervention.</assert>
+    </rule>
+  </pattern>
+
+  <pattern id="did-manual">
+
+    <rule context="/*:ead/*:archdesc/*:did">
+      <!-- 'did' element (collection-level) -->
+      <assert test=".[*:unitid]">
+        Collection level 'did' element must contain a 'unitid' element.
+      </assert>
+
+      <assert test=".[*:unittitle]">
+        Collection level 'did' element must contain a 'unittitle' element.
+      </assert>
+
+      <assert test=".[*:unitdate or *:unittitle/*:unitdate]">
+        Collection level 'did' element must contain a 'unitdate' element.
+      </assert>
+
+      <assert test=".[*:physdesc/*:extent]">
+        Collection level 'did' element must contain 'physdesc' element with 'extent' child.
+      </assert>
+
+      <assert test=".[not(*:container)]" diagnostics="didm-6">
+        Collection level 'did' element must not contain 'container' element.
+      </assert>
+
+    </rule>
+
+    <rule context="/*:ead/*:archdesc/*[not(local-name(.) = 'did')]//*:did">
+      <!-- 'did' elements (anywhere below collection-level)-->
+      <assert test="count(./*:unitdate|./*:unittitle) > 0">
+        'did' elements must contain a either a 'unitdate' element, a 'unittitle' element or both.
+      </assert>
+    </rule>
+
+    <rule context="/*:ead/*:archdesc/*:did/*:unitid">
+      <!-- 'unitid' element (collection-level) -->
+      <assert test="./text()[normalize-space(.)]">
+        Collection level 'unitid' element must not be empty.
+      </assert>
+    </rule>
+
+    <rule context="/*:ead/*:archdesc/*:did/*:unittitle">
+      <!-- 'unittitle' element (collection-level) -->
+      <assert test="./text()[normalize-space(.)]">
+        Collection level 'unittitle' element must not be empty.
+      </assert>
+    </rule>
+
+    <rule context="/*:ead/*:archdesc/*:did/*:unitdate|
+                   /*:ead/*:archdesc/*:did/*:unittitle/*:unitdate">
+      <!-- 'unitdate' element (collection-level) -->
+      <assert test="./text()[normalize-space(.)]">
+        Collection level 'unitdate' element must not be empty.
+      </assert>
+    </rule>
+
+    <rule context="/*:ead/*:archdesc/*:did/*:physdesc/*:extent">
+      <!-- 'physdesc/extent' element (collection-level) -->
+      <assert test="./text()[normalize-space(.)]">
+        Collection level 'physdesc/extent' element must not be empty.
+      </assert>
+    </rule>
+
+  </pattern>
+
+  <pattern id="table-manual">
+    <rule context="//*:table">
+      <!-- 'table' element -->
+      <assert test="not(.)">
+        'table' element is deprecated and must be removed.
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="date-unitdate-manual">
+    <rule context="//*:date|//*:unitdate">
+      <!-- 'date' and 'unitdate' elements -->
+      <assert test="not(.[@startYear or @endYear])" diagnostics="dua-1">
+        'date' and 'unitdate' elements must not contain 'startYear' or 'endYear' attributes.
+      </assert>
+
+      <assert test="not(.[@startYear or @endYear or @normal]) or not(.[@startYear gt @endYear] or .[tokenize(@normal, '/')[1] gt tokenize(@normal, '/')[2]])">
+        'date' and 'unitdate' elements must not have ending dates previous to their start dates.
+      </assert>
+    </rule>
+
+  </pattern>
+
+
+  <pattern id="container-manual">
+    <rule context="//*:container">
+      <!-- 'container' element -->
+      <assert test=".[@type]">
+        'container' element must contain 'type' attribute.
+      </assert>
+
+      <assert test=".[@label]">
+        'container' element must contain 'label' attribute.
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="dao-manual">
+    <rule context="//*:dao">
+      <!-- 'dao' element -->
+      <assert test=".[@title]">
+        'dao' element must contain 'title' attribute.
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="unitid-manual">
+    <rule context="//*:did[count(./*:unitid) gt 1]">
+      <!-- 'unitid' element -->
+      <assert test="not(.)">
+        More than one 'unitid' element may not be provided per level of description ('did' element), per ArchivesSpace.  One authoritative 'unitid' element should be decided on or created, method of choice/construction is left to local practice to determine.
+      </assert>
+    </rule>
+
+    <rule context="//*:unitid">
+      <!-- 'unitid' elements pointed at by 'ref' elements -->
+      <assert test="not(./@id = //*:ref/@target)">
+        'ref' elements must not point at 'unitid' elements.  'target' attribute should be rewritten to point at parent 'c'.
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="unittitle-manual">
+    <rule context="//*:did[count(./*:unittitle) gt 1]">
+      <!-- 'unittitle' element -->
+      <assert test="not(.)">
+        More than one 'unittitle' element may not be provided per level of description ('did' element), per ArchivesSpace.  One authoritative 'unittitle' element should be decided on or created, method of choice/construction is left to local practice to determine.
+      </assert>
+    </rule>
+
     <rule context="//*:unittitle">
       <!-- 'unittitle' elements -->
-      <assert test="not(.//*:unitdate)" diagnostics="unittitle-3">
+      <assert test="not(./@id = //*:ref/@target)">
+        'ref' elements must not point at 'unittitle' elements.  'target' attribute should be rewritten to point at parent 'c'.
+      </assert>
+
+      <assert test="not(.//*:unitdate)">
         'unitdate' elements nested inside 'unittitle' elements will be pulled out by ArchivesSpace, and thus leave gaps in their parent's content.  Suggest copying 'unitdate' content directly into parent element, and moving 'unitdate' to following-sibling position relative to its enclosing 'unitdate'.
       </assert>
     </rule>
   </pattern>
 
+  <pattern id="daogrp-manual">
+    <rule context="//*:daogrp">
+      <!-- 'daogrp' element -->
+      <assert test="not(.)">
+        'daogrp' element is not well supported in ArchivesSpace.  Remove 'daogrp', and rewrite contained 'daoloc' elements to 'dao's, taking attributes from 'arc' elements.
+      </assert>
+    </rule>
+
+    <rule context="//*:daogrp/*:arc[@show = 'new']">
+      <!-- 'arc' element -->
+      <assert test=".[@actuate = 'onRequest']">
+        'arc' elements with the 'show' attribute of 'new' should have the 'actuate' attribute 'onRequest'.
+      </assert>
+    </rule>
+  </pattern>
+  <pattern id="namegrp-manual">
+    <rule context="//*:namegrp">
+      <!-- 'namegrp' element -->
+      <assert test="not(.)">
+        'namegrp' element is not supported in ArchivesSpace. Serialize contents of 'namegrp' subelements in content of first subelement, and replace 'namegrp' with first subelement.
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="identifier-manual">
+    <rule context="/*:ead">
+      <!-- 'ead' element -->
+      <assert test="not(.[.//*:eadid/@identifier]) or
+                    (./*:archdesc//*:processinfo/*:p/text() = .//*:eadid/@identifier)">
+        The 'identifier' attribute on 'eadid' elements is not preserved by ArchivesSpace.  Place contents in a 'p' element within a 'processinfo' element in 'archdesc'.
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="bibliography-manual">
+    <rule context="//*:bibliography/*:list">
+      <!-- 'bibliography' element -->
+      <assert test="not(.)">
+        'bibliography' element with 'list' element as content imports incorrectly.  Change 'item' elements to 'bibref' elements, move into parent 'bibliography', drop 'list'.
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="change-manual">
+    <rule context="//*:revisiondesc/*:change">
+      <!-- 'change' element in 'revisiondesc' -->
+      <assert test=".[*:date and *:item]">
+        'revisiondesc/change' element must contain both a date and an item subelement.
+      </assert>
+    </rule>
+  </pattern>
+  <pattern id="name-manual">
+    <rule context="//*:name">
+      <!-- 'name' element -->
+      <assert test=".[not(@encodinganalog = ('110', '111', '130', '240', '245', '610', '611', '630', '650', '651', '654', '700', '710'))]">
+        'name' elements with 'encodinganalog' attribute values that correspond to more specific EAD elements should be represented by those elements instead of 'name'.
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="ptrgrp-manual">
+    <rule context="//*:ptrgrp">
+      <!-- 'ptrgrp' element -->
+      <assert test="not(.)">
+        'ptrgrp' elements with nested 'ref' elements are not properly imported by ArchivesSpace. The 'ptrgrp' should be replaced with a 'ref' element and the 'ref's to nested 'ptr's.
+      </assert>
+    </rule>
+  </pattern>
+
   <diagnostics>
-    <diagnostic id="unittitle-3">Ref-number: 40</diagnostic>
+    <diagnostic id="enm-1">
+      Content: Value is "<value-of select="." />"
+    </diagnostic>
+    <diagnostic id="da-2">
+      Content: '<value-of select="local-name(.)" />' element can be moved out of 'descgrp' element into a new 'note' element in surrounding '<value-of select="local-name(./../..)" />'
+    </diagnostic>
+    <diagnostic id="didm-6">
+      Content: 'container' elements should not be nested within the 'did' in the 'archdesc'.
+    </diagnostic>
+    <diagnostic id="dua-1">
+      Content: Content from '<value-of select="local-name(.)" />' element's 'startYear' (<value-of select="./@startYear" />) and 'endYear' (<value-of select="./@endYear" />) attributes should be combined into a single 'normal' attribute separated by '/' (<value-of select="./@startYear" />/<value-of select="./@endYear" />)
+    </diagnostic>
   </diagnostics>
 
 </schema>
