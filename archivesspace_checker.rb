@@ -14,13 +14,6 @@ class ArchivesspaceChecker < Sinatra::Base
 
   set :haml, :format => :html5
 
-  # Schematron phases supported by included schematron
-  PHASE_OPTS = [
-    {name: "Manual", value: "'manual'", checked: "checked"},
-    {name: "Automatic", value: "'automated'"},
-    {name: "Everything", value: "'#ALL'"}
-  ]
-
   # Output options
   OUTPUT_OPTS = {
     'xml' => {name: 'xml', value: 'xml', mime: 'application/xml', :checked => "checked"},
