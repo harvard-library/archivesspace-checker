@@ -31,9 +31,17 @@
   </phase>
 
   <pattern id="extent-nonnumeric-manual">
-    <rule context="//*:extent">
+    <rule context="//*:extent[not(@unit)]">
       <!-- 'extent' elements -->
-      <assert test="matches(., '^\s*[0123456789.]')" diagnostics="enm-1">'extent' element content should not start with non-numeric character except '.'.</assert>
+      <assert test="matches(., '^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?([0-9\.,]+)+\s+(.*)$')" diagnostics="enm-1">
+        'extent' element content is in unsupported format.
+      </assert>
+    </rule>
+    <rule context="//*:extent[@unit]">
+      <!-- 'extent' elements -->
+      <assert test="matches(., concat('^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?(', ./@unit, ':\s+)?([0-9\.,]+)+$'), 'i')" diagnostics="enm-1">
+        'extent' element content is in unsupported format.
+      </assert>
     </rule>
   </pattern>
 
@@ -364,8 +372,8 @@
   </pattern>
 
   <diagnostics>
-    <diagnostic id="enm-1">Ref-number: 18
-      Content: Value is "<value-of select="." />"</diagnostic>
+    <diagnostic id="enm-1">Ref-number: AS-60
+      Content: Value is "<value-of select="." />" with unit attribute "<value-of select="./@unit" />"</diagnostic>
     <diagnostic id="dm-1">Ref-number: 11</diagnostic>
     <diagnostic id="da-1">Ref-number: 11</diagnostic>
     <diagnostic id="da-2">Ref-number: 11
