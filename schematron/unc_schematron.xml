@@ -46,11 +46,6 @@
   </pattern>
 
   <pattern id="descgrp-automated">
-    <rule context="//*:descgrp/*:head">
-      <!-- 'head' elements inside 'descgrp' elements -->
-      <assert test="not(.)" diagnostics="da-1">'head' element should be dropped from descgrp</assert>
-    </rule>
-
     <rule context="//*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:address|
                    //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:blockquote|
                    //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:chronlist|
@@ -58,21 +53,6 @@
                    //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:p">
       <!-- 'descgrp' sub-elements of kinds valid in 'note' element -->
       <assert test="not(.)" diagnostics="da-2">'descgrp' is deprecated, and must be removed. 'address', 'blockquote', 'chronlist', 'list', and 'p' children of 'descgrp' must be reparented into a new 'note' element in the 'descgrp's parent element</assert>
-    </rule>
-    <rule context="//*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:accessrestrict|
-                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:accruals|
-                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:acqinfo|
-                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:altformavail|
-                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:appraisal|
-                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:custodhist|
-                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:note|
-                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:prefercite|
-                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:processinfo|
-                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:separatedmaterial|
-                   //*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:userestrict">
-      <!-- 'descgrp' sub-elements of kinds valid outside of 'note' -->
-      <assert test="not(.)" diagnostics="da-3">'descgrp' is deprecated, and must be removed. Element children of the following types must be reparented into 'descgrp's parent element:
-        'accessrestrict', 'accruals', 'acqinfo', 'altformavail', 'appraisal', 'custodhist', 'note', 'prefercite', 'processinfo', 'separatedmaterial', 'userestrict'</assert>
     </rule>
   </pattern>
 
@@ -87,10 +67,6 @@
 
     <rule context="/*:ead/*:archdesc/*:did">
       <!-- 'did' element (collection-level) -->
-      <assert test=".[*:unitid]" diagnostics="didm-1">
-        Collection level 'did' element must contain a 'unitid' element.
-      </assert>
-
       <assert test=".[*:unittitle]" diagnostics="didm-2">
         Collection level 'did' element must contain a 'unittitle' element.
       </assert>
@@ -116,25 +92,10 @@
       </assert>
     </rule>
 
-    <rule context="/*:ead/*:archdesc/*:did/*:unitid">
-      <!-- 'unitid' element (collection-level) -->
-      <assert test="./text()[normalize-space(.)]" diagnostics="didm-1a">
-        Collection level 'unitid' element must not be empty.
-      </assert>
-    </rule>
-
     <rule context="/*:ead/*:archdesc/*:did/*:unittitle">
       <!-- 'unittitle' element (collection-level) -->
       <assert test="./text()[normalize-space(.)]" diagnostics="didm-2a">
         Collection level 'unittitle' element must not be empty.
-      </assert>
-    </rule>
-
-    <rule context="/*:ead/*:archdesc/*:did/*:unitdate|
-                   /*:ead/*:archdesc/*:did/*:unittitle/*:unitdate">
-      <!-- 'unitdate' element (collection-level) -->
-      <assert test="./text()[normalize-space(.)]" diagnostics="didm-3a">
-        Collection level 'unitdate' element must not be empty.
       </assert>
     </rule>
 
@@ -163,7 +124,7 @@
         'date' and 'unitdate' elements must not contain 'startYear' or 'endYear' attributes.
       </assert>
 
-      <assert test="normalize-space(string-join((./@startYear, ./@endYear, ./@normal, ./text()), ''))" diagnostics="noempty-2">
+      <assert test="matches(normalize-space(tokenize(./@normal, '/')[1]), '^([0-9]{4}(\-(1[0-2]|0[1-9])(\-(0[1-9]|[12][0-9]|3[01]))?)?)$') or normalize-space(string-join((./@startYear, ./@endYear, ./text()), ''))" diagnostics="noempty-2">
         'date' and 'unitdate' elements must contain a value in either or both of their 'normal' attribute or their text content.
       </assert>
 
@@ -178,12 +139,8 @@
   <pattern id="container-automated">
     <rule context="//*:container">
       <!-- 'container' element -->
-      <assert test=".[@type]" diagnostics="ca-1">
-        'container' element must contain 'type' attribute.
-      </assert>
-
-      <assert test=".[@label]" diagnostics="ca-2">
-        'container' element must contain 'label' attribute.
+      <assert test="(./text()[normalize-space(.)] and .[@type]) or (not(./text()[normalize-space(.)]) and not(.[@type]))" diagnostics="ca-1">
+        'container' element must have content and contain 'type' attribute.
       </assert>
     </rule>
   </pattern>
@@ -198,10 +155,10 @@
   </pattern>
 
   <pattern id="any-automated">
-    <rule context="//*">
+    <rule context="//*[not(@*)]">
       <!-- Any element ('//*') -->
-      <assert test=".[node() or @*]" diagnostics="noempty-1">
-        Any element must contain either text, element, or attribute content.
+      <assert test="./text()[normalize-space(.)] or not(./*) or count(./*:p|./*:lb|./*:head) = count(./*) or ./*[@*] or ./*/text()[normalize-space(.)] or ./*/*" diagnostics="noempty-1">
+        Any element must contain either text or attribute content or have nested elements with text, element, or attribute content.
       </assert>
     </rule>
   </pattern>
@@ -271,10 +228,6 @@
       <!-- 'unittitle' elements -->
       <assert test="not(./@id = //*:ref/@target)" diagnostics="unittitle-2">
         'ref' elements must not point at 'unittitle' elements.  'target' attribute should be rewritten to point at parent 'c'.
-      </assert>
-
-      <assert test="not(.//*:unitdate)" diagnostics="unittitle-3">
-        'unitdate' elements nested inside 'unittitle' elements will be pulled out by ArchivesSpace, and thus leave gaps in their parent's content.  Suggest copying 'unitdate' content directly into parent element, and moving 'unitdate' to following-sibling position relative to its enclosing 'unitdate'.
       </assert>
     </rule>
   </pattern>
@@ -374,55 +327,78 @@
   <diagnostics>
     <diagnostic id="enm-1">Ref-number: AS-60
       Content: Value is "<value-of select="." />" with unit attribute "<value-of select="./@unit" />"</diagnostic>
-    <diagnostic id="dm-1">Ref-number: 11</diagnostic>
-    <diagnostic id="da-1">Ref-number: 11</diagnostic>
-    <diagnostic id="da-2">Ref-number: 11
-      Content: '<value-of select="local-name(.)" />' element can be moved out of 'descgrp' element into a new 'note' element in surrounding '<value-of select="local-name(./../..)" />'</diagnostic>
-    <diagnostic id="da-3">Ref-number: 11
-      Content: '<value-of select="local-name(.)" />' element can be moved out of 'descgrp element into surrounding '<value-of select="local-name(./../..)" />'</diagnostic>
-    <diagnostic id="didm-1">Ref-number: 12</diagnostic>
-    <diagnostic id="didm-1a">Ref-number: 12</diagnostic>
-    <diagnostic id="didm-2">Ref-number: 13</diagnostic>
-    <diagnostic id="didm-2a">Ref-number: 13</diagnostic>
-    <diagnostic id="didm-3">Ref-number: 14</diagnostic>
-    <diagnostic id="didm-3a">Ref-number: 14</diagnostic>
-    <diagnostic id="didm-5">Ref-number: 16</diagnostic>
-    <diagnostic id="didm-5a">Ref-number: 16</diagnostic>
+    <diagnostic id="dm-1">Ref-number: AS-38
+      Content: [Shouldn't exist in UNC EAD]
+    </diagnostic>
+
+    <!--  Possibly outdated? 'head' element seems to be ignored now.  -->
+    <!--  <diagnostic id="da-1">Ref-number: AS-38</diagnostic>  -->
+
+    <diagnostic id="da-2">Ref-number: AS-38
+      Content: [Shouldn't exist in UNC EAD] '<value-of select="local-name(.)" />' element can be moved out of 'descgrp' element into a new 'note' element in surrounding '<value-of select="local-name(./../..)" />'</diagnostic>
+
+    <!--  Possibly outdated? Seems to handle nested elements fine now.  -->
+    <!--  <diagnostic id="da-3">Ref-number: AS-38  -->
+    <!--    Content: '<value-of select="local-name(.)" />' element can be moved out of 'descgrp element into surrounding '<value-of select="local-name(./../..)" />'</diagnostic>  -->
+
+    <!--  Missing unitid handled in UncEADConverter  -->
+    <!--  <diagnostic id="didm-1">Ref-number: APPDEV-9598</diagnostic>  -->
+    <!--  <diagnostic id="didm-1a">Ref-number: APPDEV-9598</diagnostic>  -->
+
+    <diagnostic id="didm-2">Ref-number: AS-38</diagnostic>
+    <diagnostic id="didm-2a">Ref-number: AS-38</diagnostic>
+    <diagnostic id="didm-3">Ref-number: AS-38</diagnostic>
+
+    <!--  Should be covered better by noempty-2  -->
+    <!--  <diagnostic id="didm-3a">Ref-number: AS-38</diagnostic> -->
+
+    <diagnostic id="didm-5">Ref-number: AS-38</diagnostic>
+    <diagnostic id="didm-5a">Ref-number: AS-38</diagnostic>
     <diagnostic id="didm-6">Ref-number: 9001
       Content: 'container' elements should not be nested within the 'did' in the 'archdesc'.
     </diagnostic>
-    <diagnostic id="didm-4">Ref-number: 15</diagnostic>
-    <diagnostic id="tblm-1">Ref-number: 25</diagnostic>
-    <diagnostic id="dua-1">Ref-number: 38
-      Content: Content from '<value-of select="local-name(.)" />' element's 'startYear' (<value-of select="./@startYear" />) and 'endYear' (<value-of select="./@endYear" />) attributes should be combined into a single 'normal' attribute separated by '/' (<value-of select="./@startYear" />/<value-of select="./@endYear" />)
+    <diagnostic id="didm-4">Ref-number: AS-38</diagnostic>
+    <diagnostic id="tblm-1">Ref-number: AS-38
+      Content: [Shouldn't exist in UNC EAD]
     </diagnostic>
-    <diagnostic id="ca-1">Ref-number: 6</diagnostic>
+    <diagnostic id="dua-1">Ref-number: AS-38
+      Content: [Shouldn't exist in UNC EAD] Content from '<value-of select="local-name(.)" />' element's 'startYear' (<value-of select="./@startYear" />) and 'endYear' (<value-of select="./@endYear" />) attributes should be combined into a single 'normal' attribute separated by '/' (<value-of select="./@startYear" />/<value-of select="./@endYear" />)
+    </diagnostic>
+    <diagnostic id="ca-1">Ref-number: AS-38</diagnostic>
     <diagnostic id="dao-1">Ref-number: 9</diagnostic>
-    <diagnostic id="noempty-1">Ref-number: 46
-      Content: '<value-of select="local-name(.)" />' element should not be empty
+    <diagnostic id="noempty-1">Ref-number: AS-38|APPDEV-9598
+      Content: '<value-of select="local-name(.)" />' element should not have empty children
     </diagnostic>
     <diagnostic id="c-1">Ref-number: 44</diagnostic>
     <diagnostic id="note-1">Ref-number: 23.1</diagnostic>
     <diagnostic id="note-2">Ref-number: 23.2</diagnostic>
     <diagnostic id="note-3">Ref-number: 23.3</diagnostic>
     <diagnostic id="note-4">Ref-number: 23.4</diagnostic>
-    <diagnostic id="noempty-2">Ref-number: 46</diagnostic>
+    <diagnostic id="noempty-2">Ref-number: AS-38</diagnostic>
     <diagnostic id="dua-2">Ref-number: 47</diagnostic>
     <diagnostic id="dua-3">Ref-number: 57</diagnostic>
     <diagnostic id="unitid-1">Ref-number: 43</diagnostic>
     <diagnostic id="unitid-2">Ref-number: 55</diagnostic>
-    <diagnostic id="unittitle-1">Ref-number: 28</diagnostic>
-    <diagnostic id="unittitle-2">Ref-number: 28</diagnostic>
+    <diagnostic id="unittitle-1">Ref-number: AS-38</diagnostic>
+    <diagnostic id="unittitle-2">Ref-number: AS-38
+      Content: [Shouldn't exist in UNC EAD]
+    </diagnostic>
     <diagnostic id="scopecontent-1">Ref-number: 2</diagnostic>
     <diagnostic id="daogrp-1">Ref-number: 10</diagnostic>
     <diagnostic id="namegrp-1">Ref-number: 22</diagnostic>
     <diagnostic id="identifier-1">Ref-number: 59</diagnostic>
-    <diagnostic id="ca-2">Ref-number: 6.2</diagnostic>
+
+    <!--  We're okay with using default mixed_media instance type -->
+    <!--  <diagnostic id="ca-2">Ref-number: AS-38</diagnostic>  -->
+
     <diagnostic id="bibliography-1">Ref-number: 20.2</diagnostic>
     <diagnostic id="change-1">Ref-number: 9001</diagnostic>
     <diagnostic id="name-1">Ref-number: 55
       Content: encodinganalog value is '<value-of select="./@encodinganalog" />', local practice at Harvard is to represent values according to the following mappings: 110,111,710=corpname, 130,240,245=title, 610,611,630,650,654=subject, 651=geogname, 700=persname</diagnostic>
-    <diagnostic id="unittitle-3">Ref-number: 40</diagnostic>
+
+    <!--  Nested unitdate in unittitle handled in UncEADConverter  -->
+    <diagnostic id="unittitle-3">Ref-number: AS-63</diagnostic>
+
     <diagnostic id="ptrgrp-1">Ref-number: 53</diagnostic>
     <diagnostic id="daogrp-2">Ref-number: 63</diagnostic>
     <diagnostic id="nested-list-1">Ref-number: 20.1</diagnostic>
