@@ -8,6 +8,8 @@
     <active pattern="extent-nonnumeric-manual" />
     <active pattern="did-manual" />
     <active pattern="table-manual" />
+    <active pattern="daodesc-manual" />
+    <active pattern="daoloc-manual" />
     <active pattern="change-manual" />
 
     <active pattern="descgrp-automated" />
@@ -148,8 +150,26 @@
   <pattern id="dao-automated">
     <rule context="//*:dao">
       <!-- 'dao' element -->
-      <assert test=".[@xlink:title]" diagnostics="dao-1">
-        'dao' element must contain 'xlink:title' attribute.
+      <assert test="not(.)" diagnostics="dao-1">
+        'dao' element found ('dao' element must contain 'title' attribute).
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="daodesc-manual">
+    <rule context="//*:daodesc">
+      <!-- 'daodesc' element -->
+      <assert test="./ancestor::*/dao or ./ancestor::*/daogrp" diagnostics="daodesc-1">
+        'daodesc' element found.
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="daoloc-manual">
+    <rule context="//*:daoloc">
+      <!-- 'daoloc' element -->
+      <assert test="./ancestor::*/dao or ./ancestor::*/daogrp" diagnostics="daoloc-1">
+        'daoloc' element found.
       </assert>
     </rule>
   </pattern>
@@ -246,13 +266,6 @@
       <!-- 'daogrp' element -->
       <assert test="not(.)" diagnostics="daogrp-1">
         'daogrp' element is not well supported in ArchivesSpace.  Remove 'daogrp', and rewrite contained 'daoloc' elements to 'dao's, taking xlink attributes from 'arc' elements.
-      </assert>
-    </rule>
-
-    <rule context="//*:daogrp/*:arc[@xlink:show = 'new']">
-      <!-- 'arc' element -->
-      <assert test=".[@xlink:actuate = 'onRequest']" diagnostics = "daogrp-2">
-        'arc' elements with the 'xlink:show' attribute of 'new' should have the 'xlink:actuate' attribute 'onRequest'.
       </assert>
     </rule>
   </pattern>
@@ -365,7 +378,9 @@
       Content: [Shouldn't exist in UNC EAD] Content from '<value-of select="local-name(.)" />' element's 'startYear' (<value-of select="./@startYear" />) and 'endYear' (<value-of select="./@endYear" />) attributes should be combined into a single 'normal' attribute separated by '/' (<value-of select="./@startYear" />/<value-of select="./@endYear" />)
     </diagnostic>
     <diagnostic id="ca-1">Ref-number: AS-38</diagnostic>
-    <diagnostic id="dao-1">Ref-number: 9</diagnostic>
+    <diagnostic id="dao-1">Ref-number: AS-52</diagnostic>
+    <diagnostic id="daodesc-1">Ref-number: AS-52</diagnostic>
+    <diagnostic id="daoloc-1">Ref-number: AS-52</diagnostic>
     <diagnostic id="noempty-1">Ref-number: AS-38|APPDEV-9598
       Content: '<value-of select="local-name(.)" />' element should not have empty children
     </diagnostic>
@@ -384,7 +399,7 @@
       Content: [Shouldn't exist in UNC EAD]
     </diagnostic>
     <diagnostic id="scopecontent-1">Ref-number: 2</diagnostic>
-    <diagnostic id="daogrp-1">Ref-number: 10</diagnostic>
+    <diagnostic id="daogrp-1">Ref-number: AS-52</diagnostic>
     <diagnostic id="namegrp-1">Ref-number: 22</diagnostic>
     <diagnostic id="identifier-1">Ref-number: 59</diagnostic>
 
@@ -400,7 +415,10 @@
     <diagnostic id="unittitle-3">Ref-number: AS-63</diagnostic>
 
     <diagnostic id="ptrgrp-1">Ref-number: 53</diagnostic>
-    <diagnostic id="daogrp-2">Ref-number: 63</diagnostic>
+
+    <!-- Not needed since daogrp-1 checks for any daogrp -->
+    <!--  <diagnostic id="daogrp-2">Ref-number: AS-52</diagnostic>  -->
+
     <diagnostic id="nested-list-1">Ref-number: 20.1</diagnostic>
     <diagnostic id="nested-list-2">Ref-number: 20.2</diagnostic>
   </diagnostics>
