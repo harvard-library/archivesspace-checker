@@ -345,19 +345,19 @@
     <!--  <diagnostic id="didm-1">Ref-number: APPDEV-9598</diagnostic>  -->
     <!--  <diagnostic id="didm-1a">Ref-number: APPDEV-9598</diagnostic>  -->
 
-    <diagnostic id="didm-2">Ref-number: AS-38</diagnostic>
-    <diagnostic id="didm-2a">Ref-number: AS-38</diagnostic>
-    <diagnostic id="didm-3">Ref-number: AS-38</diagnostic>
+    <diagnostic id="didm-2">Ref-number: AS-54</diagnostic>
+    <diagnostic id="didm-2a">Ref-number: AS-54</diagnostic>
+    <diagnostic id="didm-3">Ref-number: AS-54</diagnostic>
 
     <!--  Should be covered better by noempty-2  -->
     <!--  <diagnostic id="didm-3a">Ref-number: AS-38</diagnostic> -->
 
-    <diagnostic id="didm-5">Ref-number: AS-38</diagnostic>
-    <diagnostic id="didm-5a">Ref-number: AS-38</diagnostic>
-    <diagnostic id="didm-6">Ref-number: 9001
+    <diagnostic id="didm-5">Ref-number: AS-54</diagnostic>
+    <diagnostic id="didm-5a">Ref-number: AS-54</diagnostic>
+    <diagnostic id="didm-6">Ref-number: AS-54
       Content: 'container' elements should not be nested within the 'did' in the 'archdesc'.
     </diagnostic>
-    <diagnostic id="didm-4">Ref-number: AS-38</diagnostic>
+    <diagnostic id="didm-4">Ref-number: AS-54</diagnostic>
     <diagnostic id="tblm-1">Ref-number: AS-38
       Content: [Shouldn't exist in UNC EAD]
     </diagnostic>
