@@ -127,16 +127,14 @@ class ArchivesspaceChecker < Sinatra::Base
   # @return [nil]
   def csv_output(xml, orig_name, out)
     opts = {encoding: 'utf-8'}
-    out << CSV.generate_line( %w|filename total_errors|, opts)
-    out << CSV.generate_line( [orig_name, xml.count], opts)
-    out << CSV.generate_line( [], opts)
-    out << CSV.generate_line( %w|type location line-number message|, opts)
+    out << CSV.generate_line( %w|filename type location line-number message|, opts)
 
     xml.each do |el|
-      out << CSV.generate_line( [el.name,
+      out << CSV.generate_line( [orig_name,
+                                 el.name,
                                  el['location'],
                                  el['line-number'],
-                                 el.xpath('.//text').first.content], opts)
+                                 el.xpath('.//text').first.content.strip], opts)
     end
     return nil
   end
