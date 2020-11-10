@@ -200,6 +200,15 @@
         'ref' elements must not point at 'unitid' elements.  'target' attribute should be rewritten to point at parent 'c'.
       </assert>
     </rule>
+
+    <rule context="/*:ead">
+      <!-- 'unitid' element (collection-level) -->
+      <assert test="replace(lower-case(normalize-space(./*:archdesc//*:did/*:unitid/text())), '\s+|^0+|-z$', '') =
+                    replace(lower-case(normalize-space(//*:eadid/text())), '\s+|^0+|-z$', '')"
+              diagnostics="unitid-3">
+        Collection level 'unitid' element must equal 'eadid'.
+      </assert>
+    </rule>
   </pattern>
 
   <pattern id="unittitle-manual">
@@ -349,6 +358,7 @@
     <diagnostic id="unitid-2">Ref-number: AS-38
       Content: [Shouldn't exist in UNC EAD]
     </diagnostic>
+    <diagnostic id="unitid-3">Ref-number: AS-66</diagnostic>
     <diagnostic id="unittitle-1">Ref-number: AS-51</diagnostic>
     <diagnostic id="unittitle-2">Ref-number: AS-51
       Content: [Shouldn't exist in UNC EAD]
