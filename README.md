@@ -1,6 +1,10 @@
 # Archivesspace Checker
 
-This is a small website intended to allow Harvard Archivists to check their EAD files prior to ingest by Archivesspace.
+This repository has been forked from Harvard Library's [ArchivesSpace Checker](https://github.com/harvard-library/archivesspace-checker). 
+Major changes include creating a command line analysis tool and customizing the schematron for UNC EADs.
+
+This is a small website intended to allow archivists to check their EAD files prior to ingest by Archivesspace. 
+EADs can also be analyzed in bulk via command line rake task.
 
 ## System Requirements
 
@@ -44,6 +48,12 @@ Configuration settings can be included by putting a YAML file at `config/config.
 Right now, the only setting checked for is `schematron`, which is the location that
 the schematron file being used is located at.
 
+## Command Line Usage Instructions
+
+Multiple EADs can be analyzed in bulk via command line, with errors output to CSV format in `tmp/result_TIMESTAMP.csv`:
+
+    rake analyze_eads EADS=/path/to/EADs FILE=/path/to/schematron
+
 ## Tests
 
 Run automated tests:
@@ -71,6 +81,7 @@ Documentation generated via YARD is available [here](http://harvard-library.gith
 
 ## Contributors
 * [Dave Mayo](https://github.com/pobocks)
+* [Christina Cortland](https://github.com/chrisrlc)
 
 ## License
 Licensed under the Apache License, Version 2.0 (the "License");

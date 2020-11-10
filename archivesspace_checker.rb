@@ -36,9 +36,6 @@ class ArchivesspaceChecker < Sinatra::Base
   SCHEMATRON = IO.read(CONFIG['schematron'] ||
                        File.join('schematron', 'archivesspace_checker_sch.xml'))
 
-  # Default Schematronium instance used for checking files
-  CHECKER = Schematronium.new(SCHEMATRON)
-
   # A tagged string class, used to attach phase information to the rule descriptions
   #
   # Delegates most functionality to String
@@ -68,6 +65,27 @@ class ArchivesspaceChecker < Sinatra::Base
     end
   end
 
+  class Runner
+    def initialize(schematron)
+      # Default Schematronium instance used for checking files
+      @checker = Schematronium.new(schematron)
+    end
+
+    # Runs schematron over a particular file
+    #
+    # @param [File] f a file to check
+    def check_file(f)
+      s_xml = Saxon.XML(f)
+      xml = @checker.check(s_xml.to_s)
+      xml.remove_namespaces!
+      xml = xml.xpath("//failed-assert") + xml.xpath("//successful-report")
+      xml.each do |el|
+        el["line-number"] = s_xml.xpath(el.attr("location")).get_line_number
+      end
+      xml
+    end
+  end
+
   stron_xml = Nokogiri::XML(SCHEMATRON).remove_namespaces!
 
   # Representation of Schematronium structure used for generating help
@@ -79,20 +97,6 @@ class ArchivesspaceChecker < Sinatra::Base
   end.sort_by {|k,v| k}.to_h
 
   # @!group Helper Methods
-
-  # Runs schematron over a particular file
-  #
-  # @param [File] f a file to check
-  def check_file(f)
-    s_xml = Saxon.XML(f)
-    xml = CHECKER.check(s_xml.to_s)
-    xml.remove_namespaces!
-    xml = xml.xpath("//failed-assert") + xml.xpath("//successful-report")
-    xml.each do |el|
-      el["line-number"] = s_xml.xpath(el.attr("location")).get_line_number
-    end
-    xml
-  end
 
   # Stream XML as generated to out
   #
@@ -160,7 +164,7 @@ class ArchivesspaceChecker < Sinatra::Base
 
     # If Saxon throws, set headers and just return the response
     begin
-      result_of_check = check_file(up[:tempfile])
+      result_of_check = Runner.new(SCHEMATRON).check_file(up[:tempfile])
     rescue Java::NetSfSaxonS9api::SaxonApiException => e
       headers "Content-Type" => "#{OUTPUT_OPTS['xml'][:mime]}; charset=utf8"
       return <<-ERROR.lines.map(&:lstrip).join

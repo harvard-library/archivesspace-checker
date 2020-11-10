@@ -14,3 +14,6 @@
 .ruby-version
 .rakeTasks
 /.idea
+
+# Rake task output CSVs
+tmp/*

@@ -10,3 +10,31 @@ Rake::TestTask.new do |t|
 end
 
 task :default => :test
+
+# rake analyze_eads EADS=/path/to/EADs FILE=/path/to/schematron
+desc "Run ArchivesSpace Checker over a set of EADs."
+task :analyze_eads do
+  raise "EADS environment variable must be set to directory with input EADs" unless ENV['EADS']
+  raise "Must have 'FILE' provided in ENV" unless ENV['FILE']
+
+  schematron = IO.read(ENV['FILE'])
+  eads = File.expand_path(ENV['EADS'])
+
+  csv_filename = "tmp/result_#{DateTime.now.strftime('%m_%d_%Y_%H%M%S')}.csv"
+  CSV.open(csv_filename, 'w+') do |csv|
+    csv << %w|filename type location line-number message|
+
+    Dir[File.join(eads, "*.xml")].each do |ead|
+      ead_filename = URI(ead).path.split('/').last
+      xml = ArchivesspaceChecker::Runner.new(schematron).check_file(IO.read(ead))
+      xml.each do |el|
+        csv << [ead_filename,
+                el.name,
+                el['location'],
+                el['line-number'],
+                el.xpath('.//text').first.content.strip]
+      end
+    end
+  end
+  puts "CREATED CSV >> #{csv_filename}"
+end
