@@ -17,6 +17,8 @@ task :analyze_eads do
   raise "EADS environment variable must be set to directory with input EADs" unless ENV['EADS']
   raise "Must have 'FILE' provided in ENV" unless ENV['FILE']
 
+  puts 'Started at: ' + DateTime.now.strftime('%H:%M:%S')
+
   schematron = IO.read(ENV['FILE'])
   eads = File.expand_path(ENV['EADS'])
 
@@ -36,5 +38,7 @@ task :analyze_eads do
       end
     end
   end
+
+  puts 'Finished at: ' + DateTime.now.strftime('%H:%M:%S')
   puts "CREATED CSV >> #{csv_filename}"
 end

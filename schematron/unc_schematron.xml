@@ -31,13 +31,13 @@
   <pattern id="extent-nonnumeric-manual">
     <rule context="//*:extent[not(@unit)]">
       <!-- 'extent' elements -->
-      <assert test="matches(., '^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?([0-9\.,]+)+\s+(.*)$')" diagnostics="enm-1">
+      <assert test="matches(normalize-space(.), '^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?([0-9\.,]+)+\s+(.*)$')" diagnostics="enm-1">
         'extent' element content is in unsupported format.
       </assert>
     </rule>
     <rule context="//*:extent[@unit]">
       <!-- 'extent' elements -->
-      <assert test="matches(., concat('^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?(', ./@unit, ':\s+)?([0-9\.,]+)+$'), 'i')" diagnostics="enm-1">
+      <assert test="matches(normalize-space(.), concat('^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?(', ./@unit, ':\s+)?([0-9\.,]+)+$'), 'i')" diagnostics="enm-1">
         'extent' element content is in unsupported format.
       </assert>
     </rule>
@@ -203,7 +203,7 @@
 
     <rule context="/*:ead">
       <!-- 'unitid' element (collection-level) -->
-      <assert test="replace(lower-case(normalize-space(./*:archdesc//*:did/*:unitid/text())), '\s+|^0+|-z$', '') =
+      <assert test="replace(lower-case(normalize-space(./*:archdesc/*:did/*:unitid/text())), '\s+|^0+|-z$', '') =
                     replace(lower-case(normalize-space(//*:eadid/text())), '\s+|^0+|-z$', '')"
               diagnostics="unitid-3">
         Collection level 'unitid' element must equal 'eadid'.
