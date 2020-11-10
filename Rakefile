@@ -26,8 +26,11 @@ task :analyze_eads do
   CSV.open(csv_filename, 'w+') do |csv|
     csv << %w|filename type location line-number message|
 
-    Dir[File.join(eads, "*.xml")].each do |ead|
+    ead_n = 0  # Start ead counter
+    Dir[File.join(eads, "*.xml")].sort.each do |ead|
       ead_filename = URI(ead).path.split('/').last
+      puts "Checking #{ead_filename}..."
+
       xml = ArchivesspaceChecker::Runner.new(schematron).check_file(IO.read(ead))
       xml.each do |el|
         csv << [ead_filename,
@@ -36,6 +39,10 @@ task :analyze_eads do
                 el['line-number'],
                 el.xpath('.//text').first.content.strip]
       end
+
+      # Increment ead counter
+      ead_n += 1
+      puts "Checked #{ead_n} EADs at #{DateTime.now.strftime('%H:%M:%S')}..." if ead_n % 100 == 0
     end
   end
 

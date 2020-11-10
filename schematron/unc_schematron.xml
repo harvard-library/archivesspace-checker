@@ -31,13 +31,13 @@
   <pattern id="extent-nonnumeric-manual">
     <rule context="//*:extent[not(@unit)]">
       <!-- 'extent' elements -->
-      <assert test="matches(normalize-space(.), '^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?([0-9\.,]+)+\s+(.*)$')" diagnostics="enm-1">
+      <assert test="not(normalize-space(./text())) or matches(normalize-space(.), '^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?([0-9\.,]+)+\s+(.*)$')" diagnostics="enm-1">
         'extent' element content is in unsupported format.
       </assert>
     </rule>
     <rule context="//*:extent[@unit]">
       <!-- 'extent' elements -->
-      <assert test="matches(normalize-space(.), concat('^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?(', ./@unit, ':\s+)?([0-9\.,]+)+$'), 'i')" diagnostics="enm-1">
+      <assert test="not(normalize-space(./text())) or matches(normalize-space(.), concat('^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?(', ./@unit, ':\s+)?([0-9\.,]+)+$'), 'i')" diagnostics="enm-1">
         'extent' element content is in unsupported format.
       </assert>
     </rule>
@@ -120,7 +120,7 @@
         'date' and 'unitdate' elements must not contain 'startYear' or 'endYear' attributes.
       </assert>
 
-      <assert test="matches(normalize-space(tokenize(./@normal, '/')[1]), '^([0-9]{4}(\-(1[0-2]|0[1-9])(\-(0[1-9]|[12][0-9]|3[01]))?)?)$') or normalize-space(string-join((./@startYear, ./@endYear, ./text()), ''))" diagnostics="noempty-2">
+      <assert test="(not(.[node()]) and count(./@era|@calendar) = count(./@*)) or matches(normalize-space(tokenize(./@normal, '/')[1]), '^([0-9]{4}(\-(1[0-2]|0[1-9])(\-(0[1-9]|[12][0-9]|3[01]))?)?)$') or normalize-space(string-join((./@startYear, ./@endYear, ./text()), ''))" diagnostics="noempty-2">
         'date' and 'unitdate' elements must contain a value in either or both of their 'normal' attribute or their text content.
       </assert>
 
@@ -135,7 +135,7 @@
   <pattern id="container-manual">
     <rule context="//*:container">
       <!-- 'container' element -->
-      <assert test="(./text()[normalize-space(.)] and .[@type]) or (not(./text()[normalize-space(.)]) and not(.[@type]))" diagnostics="ca-1">
+      <assert test="(./descendant-or-self::*/text()[normalize-space(.)] and .[@type]) or (not(./descendant-or-self::*/text()[normalize-space(.)]) and not(.[@type]))" diagnostics="ca-1">
         'container' element must have content and contain 'type' attribute.
       </assert>
     </rule>
@@ -171,7 +171,7 @@
   <pattern id="any-manual">
     <rule context="//*[not(@*)]">
       <!-- Any element ('//*') -->
-      <assert test="./text()[normalize-space(.)] or not(./*) or count(./*:p|./*:lb|./*:head) = count(./*) or ./*[@*] or ./*/text()[normalize-space(.)] or ./*/*" diagnostics="noempty-1">
+      <assert test="local-name(.) = 'physdesc' or ./text()[normalize-space(.)] or not(./*) or count(./*:p|./*:lb|./*:head) = count(./*) or ./*[@*] or ./*/text()[normalize-space(.)] or ./*/*" diagnostics="noempty-1">
         Any element must contain either text or attribute content or have nested elements with text, element, or attribute content.
       </assert>
     </rule>
