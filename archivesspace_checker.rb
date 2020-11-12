@@ -85,7 +85,21 @@ class ArchivesspaceChecker < Sinatra::Base
       end
       xml
     end
+
+    def csv_headers
+      %w|filename type location line-number message reference|
+    end
+
+    def error_output(ead_filename, el)
+      [ead_filename,
+       el.name,
+       el['location'],
+       el['line-number'],
+       el.xpath('.//text').first.content.strip,
+       el.xpath('.//diagnostic-reference').first.content.gsub(/\s+/, ' ').strip]
+    end
   end
+  RUNNER = Runner.new(SCHEMATRON)
 
   stron_xml = Nokogiri::XML(SCHEMATRON).remove_namespaces!
 
@@ -132,14 +146,10 @@ class ArchivesspaceChecker < Sinatra::Base
   # @return [nil]
   def csv_output(xml, orig_name, out)
     opts = {encoding: 'utf-8'}
-    out << CSV.generate_line( %w|filename type location line-number message|, opts)
+    out << CSV.generate_line( RUNNER.csv_headers, opts)
 
     xml.each do |el|
-      out << CSV.generate_line( [orig_name,
-                                 el.name,
-                                 el['location'],
-                                 el['line-number'],
-                                 el.xpath('.//text').first.content.strip], opts)
+      out << CSV.generate_line( RUNNER.error_output(orig_name, el), opts)
     end
     return nil
   end
@@ -165,7 +175,7 @@ class ArchivesspaceChecker < Sinatra::Base
 
     # If Saxon throws, set headers and just return the response
     begin
-      result_of_check = Runner.new(SCHEMATRON).check_file(up[:tempfile])
+      result_of_check = RUNNER.check_file(up[:tempfile])
     rescue Java::NetSfSaxonS9api::SaxonApiException => e
       headers "Content-Type" => "#{OUTPUT_OPTS['xml'][:mime]}; charset=utf8"
       return <<-ERROR.lines.map(&:lstrip).join

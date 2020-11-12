@@ -29,15 +29,14 @@
   </phase>
 
   <pattern id="extent-nonnumeric-manual">
-    <rule context="//*:extent[not(@unit)]">
+    <!--  Doesn't verify <extent> parsability if <extent> isn't first child extent of parent <physdesc> (and first child has text)  -->
+    <rule context="//*:extent">
       <!-- 'extent' elements -->
-      <assert test="not(normalize-space(./text())) or matches(normalize-space(.), '^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?([0-9\.,]+)+\s+(.*)$')" diagnostics="enm-1">
-        'extent' element content is in unsupported format.
-      </assert>
-    </rule>
-    <rule context="//*:extent[@unit]">
-      <!-- 'extent' elements -->
-      <assert test="not(normalize-space(./text())) or matches(normalize-space(.), concat('^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?(', ./@unit, ':\s+)?([0-9\.,]+)+$'), 'i')" diagnostics="enm-1">
+      <assert test="not(normalize-space(string-join(./text(), '')))
+                    or (not(./ancestor::*/physdesc/*:extent[1] = .) and normalize-space(string-join(./ancestor::*/physdesc/*:extent[1]/text(), '')))
+                    or matches(normalize-space(.), '^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?([0-9\.,]+)+\s+([^,;]*)$')
+                    or (.[@unit] and matches(normalize-space(.), concat('^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?(', ./@unit, ':\s+)?([0-9\.,]+)+$'), 'i'))"
+              diagnostics="enm-1">
         'extent' element content is in unsupported format.
       </assert>
     </rule>
@@ -203,8 +202,8 @@
 
     <rule context="/*:ead">
       <!-- 'unitid' element (collection-level) -->
-      <assert test="replace(lower-case(normalize-space(./*:archdesc/*:did/*:unitid/text())), '\s+|^0+|-z$', '') =
-                    replace(lower-case(normalize-space(//*:eadid/text())), '\s+|^0+|-z$', '')"
+      <assert test="not(./*:archdesc/*:did/*:unitid/text()) or (replace(lower-case(normalize-space(./*:archdesc/*:did/*:unitid/text())), '\s+|^0+|-z$', '') =
+                    replace(lower-case(normalize-space(//*:eadid/text())), '\s+|^0+|-z$', ''))"
               diagnostics="unitid-3">
         Collection level 'unitid' element must equal 'eadid'.
       </assert>
