@@ -14,13 +14,6 @@ class ArchivesspaceChecker < Sinatra::Base
 
   set :haml, :format => :html5
 
-  # Schematron phases supported by included schematron
-  PHASE_OPTS = [
-    {name: "Manual", value: "'manual'", checked: "checked"},
-    {name: "Automatic", value: "'automated'"},
-    {name: "Everything", value: "'#ALL'"}
-  ]
-
   # Output options
   OUTPUT_OPTS = {
     'xml' => {name: 'xml', value: 'xml', mime: 'application/xml', :checked => "checked"},
@@ -33,7 +26,8 @@ class ArchivesspaceChecker < Sinatra::Base
 
   # Disable a bunch of stuff in parser to prevent XXE vulnerabilities
   parser_options = Saxon::Processor.default.to_java.getUnderlyingConfiguration.parseOptions
-  parser_options.add_parser_feature("http://apache.org/xml/features/disallow-doctype-decl", true)
+  # TODO: figure out how to allow EADs with doctype declaration without weakening security? (AS-56)
+  # parser_options.add_parser_feature("http://apache.org/xml/features/disallow-doctype-decl", true)
   parser_options.add_parser_feature("http://xml.org/sax/features/external-general-entities", false)
   parser_options.add_parser_feature("http://xml.org/sax/features/external-parameter-entities", false)
 
@@ -42,9 +36,6 @@ class ArchivesspaceChecker < Sinatra::Base
   # The schematron used by the application to check XML
   SCHEMATRON = IO.read(CONFIG['schematron'] ||
                        File.join('schematron', 'archivesspace_checker_sch.xml'))
-
-  # Default Schematronium instance used for checking files
-  CHECKER = Schematronium.new(SCHEMATRON)
 
   # A tagged string class, used to attach phase information to the rule descriptions
   #
@@ -75,6 +66,41 @@ class ArchivesspaceChecker < Sinatra::Base
     end
   end
 
+  class Runner
+    def initialize(schematron)
+      # Default Schematronium instance used for checking files
+      @checker = Schematronium.new(schematron)
+    end
+
+    # Runs schematron over a particular file
+    #
+    # @param [File] f a file to check
+    def check_file(f)
+      s_xml = Saxon.XML(f)
+      xml = @checker.check(s_xml.to_s)
+      xml.remove_namespaces!
+      xml = xml.xpath("//failed-assert") + xml.xpath("//successful-report")
+      xml.each do |el|
+        el["line-number"] = s_xml.xpath(el.attr("location")).get_line_number
+      end
+      xml
+    end
+
+    def csv_headers
+      %w|filename type location line-number message reference|
+    end
+
+    def error_output(ead_filename, el)
+      [ead_filename,
+       el.name,
+       el['location'],
+       el['line-number'],
+       el.xpath('.//text').first.content.strip,
+       el.xpath('.//diagnostic-reference').first.content.gsub(/\s+/, ' ').strip]
+    end
+  end
+  RUNNER = Runner.new(SCHEMATRON)
+
   stron_xml = Nokogiri::XML(SCHEMATRON).remove_namespaces!
 
   # Representation of Schematronium structure used for generating help
@@ -86,25 +112,6 @@ class ArchivesspaceChecker < Sinatra::Base
   end.sort_by {|k,v| k}.to_h
 
   # @!group Helper Methods
-
-  # Runs schematron over a particular file
-  #
-  # If phase argument is provided, constructs checker restricted to that phase.
-  # @param [File] f a file to check
-  # @param [String] phase schematron phase to be run
-  def check_file(f, phase)
-    # If phase is other than default, bespoke checker
-    checker = (phase == "'#ALL'") ? CHECKER : Schematronium.new(SCHEMATRON, phase)
-
-    s_xml = Saxon.XML(f)
-    xml = checker.check(s_xml.to_s)
-    xml.remove_namespaces!
-    xml = xml.xpath("//failed-assert") + xml.xpath("//successful-report")
-    xml.each do |el|
-      el["line-number"] = s_xml.xpath(el.attr("location")).get_line_number
-    end
-    xml
-  end
 
   # Stream XML as generated to out
   #
@@ -139,16 +146,10 @@ class ArchivesspaceChecker < Sinatra::Base
   # @return [nil]
   def csv_output(xml, orig_name, out)
     opts = {encoding: 'utf-8'}
-    out << CSV.generate_line( %w|filename total_errors|, opts)
-    out << CSV.generate_line( [orig_name, xml.count], opts)
-    out << CSV.generate_line( [], opts)
-    out << CSV.generate_line( %w|type location line-number message|, opts)
+    out << CSV.generate_line( RUNNER.csv_headers, opts)
 
     xml.each do |el|
-      out << CSV.generate_line( [el.name,
-                                 el['location'],
-                                 el['line-number'],
-                                 el.xpath('.//text').first.content], opts)
+      out << CSV.generate_line( RUNNER.error_output(orig_name, el), opts)
     end
     return nil
   end
@@ -174,7 +175,7 @@ class ArchivesspaceChecker < Sinatra::Base
 
     # If Saxon throws, set headers and just return the response
     begin
-      result_of_check = check_file(up[:tempfile], params[:phase])
+      result_of_check = RUNNER.check_file(up[:tempfile])
     rescue Java::NetSfSaxonS9api::SaxonApiException => e
       headers "Content-Type" => "#{OUTPUT_OPTS['xml'][:mime]}; charset=utf8"
       return <<-ERROR.lines.map(&:lstrip).join
