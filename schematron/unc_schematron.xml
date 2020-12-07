@@ -16,7 +16,6 @@
     <active pattern="container-manual" />
     <active pattern="dao-manual" />
     <active pattern="any-manual" />
-    <active pattern="note-manual" />
     <active pattern="unitid-manual" />
     <active pattern="unittitle-manual" />
     <active pattern="daogrp-manual" />
@@ -176,15 +175,6 @@
     </rule>
   </pattern>
 
-  <pattern id="note-manual">
-    <rule context="//*:note">
-      <!-- 'note' element -->
-      <assert test="not(./ancestor::*/controlaccess)" diagnostics="note-1">
-        'controlaccess' elements cannot contain 'note' elements.
-      </assert>
-    </rule>
-  </pattern>
-
   <pattern id="unitid-manual">
     <rule context="//*:did[count(./*:unitid) gt 1]">
       <!-- 'unitid' element -->
@@ -292,12 +282,8 @@
   <pattern id="nested-list-manual">
     <rule context="//*:list">
       <!-- 'list' element -->
-      <assert test="not(//*:item/*:list)" diagnostics="nested-list-1">
+      <assert test="not(./ancestor::*/item)" diagnostics="nested-list-1">
         'item' elements with 'list' element children are not properly imported by ArchivesSpace.  'list' elements should be flattened so that no nesting occurs.
-      </assert>
-
-      <assert test="not(//*:item/*[not(./self::list)]//list)" diagnostics="nested-list-2">
-        'item' elements with non-'list' children which have 'list' children are not properly imported by ArchivesSpace.  'list' elements should be flattened so that no nesting occurs.
       </assert>
     </rule>
   </pattern>
@@ -345,9 +331,6 @@
     <diagnostic id="noempty-1">Ref-number: AS-38|APPDEV-9598
       Content: '<value-of select="local-name(.)" />' element should not have empty children
     </diagnostic>
-    <diagnostic id="note-1">Ref-number: AS-38
-      Content: [Shouldn't exist in UNC EAD]
-    </diagnostic>
     <diagnostic id="noempty-2">Ref-number: AS-38</diagnostic>
     <!--  Should be covered better by noempty-2: <diagnostic id="didm-3a">Ref-number: AS-38</diagnostic> -->
     <diagnostic id="dua-3">Ref-number: 57</diagnostic>
@@ -382,8 +365,11 @@
       Content: [Shouldn't exist in UNC EAD]
     </diagnostic>
     <diagnostic id="nested-list-1">Ref-number: AS-55</diagnostic>
-    <diagnostic id="nested-list-2">Ref-number: AS-55</diagnostic>
     <diagnostic id="controlaccess-1">Ref-number: AS-49</diagnostic>
+
+    <!--  Logic seems wrong and duplicative?:  -->
+    <!--    <diagnostic id="note-1">Ref-number: AS-38</diagnostic>  -->
+    <!--    <diagnostic id="nested-list-2">Ref-number: AS-55</diagnostic>  -->
 
     <!--  Possibly outdated?:  -->
     <!--    'head' element seems to be ignored now.  -->
