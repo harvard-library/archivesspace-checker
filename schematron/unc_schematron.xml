@@ -5,7 +5,6 @@
 
   <phase id="manual">
     <active pattern="descgrp-manual" />
-    <active pattern="extent-nonnumeric-manual" />
     <active pattern="did-manual" />
     <active pattern="table-manual" />
     <active pattern="daodesc-manual" />
@@ -26,20 +25,6 @@
     <active pattern="ptrgrp-manual" />
     <active pattern="nested-list-manual" />
   </phase>
-
-  <pattern id="extent-nonnumeric-manual">
-    <!--  Doesn't verify <extent> parsability if <extent> isn't first child extent of parent <physdesc> (and first child has text)  -->
-    <rule context="//*:extent">
-      <!-- 'extent' elements -->
-      <assert test="not(normalize-space(string-join(./text(), '')))
-                    or (not(./ancestor::*/physdesc/*:extent[1] = .) and normalize-space(string-join(./ancestor::*/physdesc/*:extent[1]/text(), '')))
-                    or matches(normalize-space(.), '^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?([0-9\.,]+)+\s+([^,;]*)$')
-                    or (.[@unit] and matches(normalize-space(.), concat('^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?(', ./@unit, ':\s+)?([0-9\.,]+)+$'), 'i'))"
-              diagnostics="enm-1">
-        'extent' element content is in unsupported format.
-      </assert>
-    </rule>
-  </pattern>
 
   <pattern id="descgrp-manual">
     <rule context="//*:descgrp[(@type and @type != 'add') or (not(normalize-space(@type)) and @encodinganalog = '544')]/*:address|
@@ -93,10 +78,15 @@
       </assert>
     </rule>
 
+    <!--  Doesn't verify <extent> parsability if <extent> isn't first child extent of parent <physdesc> (and first child has text)  -->
     <rule context="/*:ead/*:archdesc/*:did/*:physdesc/*:extent">
       <!-- 'physdesc/extent' element (collection-level) -->
-      <assert test="./text()[normalize-space(.)]" diagnostics="didm-5a">
-        Collection level 'physdesc/extent' element must not be empty.
+      <assert test="./text()[normalize-space(.)]
+                    and ((not(./ancestor::*/physdesc/*:extent[1] = .) and normalize-space(string-join(./ancestor::*/physdesc/*:extent[1]/text(), '')))
+                         or matches(normalize-space(.), '^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?([0-9\.,]+)+\s+([^,;]*)$')
+                         or (.[@unit] and matches(normalize-space(.), concat('^\s*\(?((About|Approximately|circa|Ca\.|Around)\s+)?(', ./@unit, ':\s+)?([0-9\.,]+)+$'), 'i')))"
+              diagnostics="didm-5a">
+        'extent' element content is in unsupported format.
       </assert>
     </rule>
 
@@ -302,8 +292,6 @@
   </pattern>
 
   <diagnostics>
-    <diagnostic id="enm-1">Ref-number: AS-60
-      Content: Value is "<value-of select="." />" with unit attribute "<value-of select="./@unit" />"</diagnostic>
     <diagnostic id="dm-1">Ref-number: AS-38
       Content: [Shouldn't exist in UNC EAD]
     </diagnostic>
@@ -313,7 +301,8 @@
     <diagnostic id="didm-2a">Ref-number: AS-54</diagnostic>
     <diagnostic id="didm-3">Ref-number: AS-54</diagnostic>
     <diagnostic id="didm-5">Ref-number: AS-54</diagnostic>
-    <diagnostic id="didm-5a">Ref-number: AS-54</diagnostic>
+    <diagnostic id="didm-5a">Ref-number: AS-60
+      Content: Value is "<value-of select="." />" with unit attribute "<value-of select="./@unit" />"</diagnostic>
     <diagnostic id="didm-6">Ref-number: AS-54
       Content: 'container' elements should not be nested within the 'did' in the 'archdesc'.
     </diagnostic>
@@ -370,6 +359,8 @@
     <!--  Logic seems wrong and duplicative?:  -->
     <!--    <diagnostic id="note-1">Ref-number: AS-38</diagnostic>  -->
     <!--    <diagnostic id="nested-list-2">Ref-number: AS-55</diagnostic>  -->
+    <!--    <diagnostic id="enm-1">Ref-number: AS-60  -->
+    <!--      Content: Value is "<value-of select="." />"</diagnostic>  -->
 
     <!--  Possibly outdated?:  -->
     <!--    'head' element seems to be ignored now.  -->
