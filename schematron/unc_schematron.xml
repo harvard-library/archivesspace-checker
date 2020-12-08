@@ -13,7 +13,6 @@
     <active pattern="controlaccess-manual" />
     <active pattern="date-unitdate-manual" />
     <active pattern="container-manual" />
-    <active pattern="dao-manual" />
     <active pattern="any-manual" />
     <active pattern="unitid-manual" />
     <active pattern="unittitle-manual" />
@@ -136,15 +135,6 @@
       <!-- 'container' element -->
       <assert test="(./descendant-or-self::*/text()[normalize-space(.)] and .[@type]) or (not(./descendant-or-self::*/text()[normalize-space(.)]) and not(.[@type]))" diagnostics="ca-1">
         'container' element must have content and contain 'type' attribute.
-      </assert>
-    </rule>
-  </pattern>
-
-  <pattern id="dao-manual">
-    <rule context="//*:dao">
-      <!-- 'dao' element -->
-      <assert test="not(.)" diagnostics="dao-1">
-        'dao' element found ('dao' element must contain 'title' attribute).
       </assert>
     </rule>
   </pattern>
@@ -327,7 +317,6 @@
       Content: [Shouldn't exist in UNC EAD] Content from '<value-of select="local-name(.)" />' element's 'startYear' (<value-of select="./@startYear" />) and 'endYear' (<value-of select="./@endYear" />) attributes should be combined into a single 'normal' attribute separated by '/' (<value-of select="./@startYear" />/<value-of select="./@endYear" />)
     </diagnostic>
     <diagnostic id="ca-1">Ref-number: AS-38</diagnostic>
-    <diagnostic id="dao-1">Ref-number: AS-52</diagnostic>
     <diagnostic id="daodesc-1">Ref-number: AS-52</diagnostic>
     <diagnostic id="daoloc-1">Ref-number: AS-52</diagnostic>
     <diagnostic id="noempty-1">Ref-number: AS-38|APPDEV-9598
@@ -402,6 +391,8 @@
     <!--      <diagnostic id="unittitle-3">Ref-number: AS-63</diagnostic>  -->
     <!--    Nested arrangement in scopecontent handled in UncEADConverter  -->
     <!--      <diagnostic id="scopecontent-1">Ref-number: APPDEV-9598</diagnostic>  -->
+    <!--    dao ignored in UncEADConverter  -->
+    <!--      <diagnostic id="dao-1">Ref-number: AS-92</diagnostic>  -->
   </diagnostics>
 
 </schema>
