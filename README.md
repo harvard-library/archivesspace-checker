@@ -8,7 +8,7 @@ EADs can also be analyzed in bulk via command line rake task.
 
 ## System Requirements
 
-* JRuby 9.2.11
+* JRuby 9.2.11+
 * JDK 13
 * Bundler 2.1.4
 
@@ -22,8 +22,20 @@ cd archivesspace-checker
 Install jruby using rvm:
 ```sh
 rvm list known
-rvm install jruby-9.2.11.1
-rvm --ruby-version use jruby-9.2.11.1
+rvm install jruby-9.2.12.0
+rvm --ruby-version use jruby-9.2.12.0
+```
+
+Install jruby using rbenv and restrict jruby version to current directory:
+```shell
+rbenv install -l
+rbenv install jruby-9.2.12.0
+rbenv local jruby-9.2.12.0
+```
+
+Note: You may need to install bundler after setting the jruby version
+```shell
+gem install bundler
 ```
 
 Set JAVA_HOME:
