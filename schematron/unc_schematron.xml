@@ -305,12 +305,20 @@
   <pattern id="controlaccess-manual">
     <rule context="//*:controlaccess">
       <!-- 'controlaccess' element -->
-      <assert test="count(./*:corpname|./*:persname|./*:famname|./*:function|./*:genreform|./*:geogname|./*:occupation|./*:subject|./*:list|./*:head) = count(./*)
+      <assert test="count(./*:corpname|./*:persname|./*:famname|./*:function|./*:genreform|./*:geogname|./*:occupation|./*:subject|./*:title|./*:list|./*:head) = count(./*)
                     and count(./*:list/*:item/*:corpname|./*:list/*:item/*:persname|./*:list/*:item/*:famname|
                     ./*:list/*:item/*:function|./*:list/*:item/*:genreform|./*:list/*:item/*:geogname|
-                    ./*:list/*:item/*:occupation|./*:list/*:item/*:subject) = count(./*:list/*:item/*)"
+                    ./*:list/*:item/*:occupation|./*:list/*:item/*:subject|./*:list/*:item/*:title) = count(./*:list/*:item/*)"
               diagnostics="controlaccess-1">
-        The only 'controlaccess' children that will migrate are: 'corpname', 'persname', 'famname', 'function', 'genreform', 'geogname', 'occupation', 'subject'.
+        The only 'controlaccess' children that will migrate are: 'corpname', 'persname', 'famname', 'function', 'genreform', 'geogname', 'occupation', 'subject', 'title'.
+      </assert>
+    </rule>
+
+    <rule context="//*:item/*[*:corpname or *:persname or *:famname or *:function or *:genreform or *:geogname
+                  or *:occupation or *:subject or *:title]">
+      <!-- 'controlaccess/list' elements -->
+      <assert test="./ancestor::*/controlaccess" diagnostics="controlaccess-2">
+        Lists containing 'corpname', 'persname', 'famname', 'function', 'genreform', 'geogname', 'occupation', 'subject', or 'title' elements can only be parsed as children of 'controlaccess' elements.
       </assert>
     </rule>
   </pattern>
@@ -384,6 +392,7 @@
     <diagnostic id="nested-list-1">Ref-number: AS-55</diagnostic>
     <diagnostic id="nested-list-2">Ref-number: AS-55</diagnostic>
     <diagnostic id="controlaccess-1">Ref-number: AS-49</diagnostic>
+    <diagnostic id="controlaccess-2">Ref-number: AS-98</diagnostic>
 
     <!--  Possibly outdated?:  -->
     <!--    'head' element seems to be ignored now.  -->
