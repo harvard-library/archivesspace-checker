@@ -16,7 +16,7 @@
     <active pattern="any-manual" />
     <active pattern="unitid-manual" />
     <active pattern="unittitle-manual" />
-    <active pattern="daogrp-manual" />
+<!-- <active pattern="daogrp-manual" /> Error will be fixed on ingest LDF 2-2-21 -->
     <active pattern="namegrp-manual" />
     <active pattern="name-manual" />
     <active pattern="identifier-manual" />
@@ -207,14 +207,15 @@
     </rule>
   </pattern>
 
-  <pattern id="daogrp-manual">
+  <!-- Error will be fixed on ingest LDF 2-2-21 -->
+ <!-- <pattern id="daogrp-manual">
     <rule context="//*:daogrp">
-      <!-- 'daogrp' element -->
+      &lt;!&ndash; 'daogrp' element &ndash;&gt;
       <assert test="not(.)" diagnostics="daogrp-1">
         'daogrp' element is not well supported in ArchivesSpace.  Remove 'daogrp', and rewrite contained 'daoloc' elements to 'dao's, taking xlink attributes from 'arc' elements.
       </assert>
     </rule>
-  </pattern>
+  </pattern>-->
   <pattern id="namegrp-manual">
     <rule context="//*:namegrp">
       <!-- 'namegrp' element -->
