@@ -23,9 +23,9 @@ group 'test' do
 end
 
 group :assets do
-  gem 'bourbon'
-  gem 'neat'
-  gem 'bitters'
+  gem 'bourbon', '4.2.3'
+  gem 'neat', '1.7.2'
+  gem 'bitters', '1.1.0'
 end
 
 gem 'sinatra'
