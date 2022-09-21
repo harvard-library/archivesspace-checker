@@ -1,0 +1,10 @@
+version: '3.5'
+
+services:
+  aspace_checker:
+    container_name: 'aspace-checker-debug'
+    build:
+      context: './'
+      dockerfile: 'Dockerfile'
+    ports:
+      - '25252:9292'
