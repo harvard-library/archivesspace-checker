@@ -33,6 +33,7 @@ WORKDIR /home/${APP_ID_NAME}
 COPY --chown=${APP_ID_NAME}:${GROUP_ID_NAME} . /home/${APP_ID_NAME}
 RUN chown -R ${APP_ID_NAME}:${GROUP_ID_NAME} /home/${APP_ID_NAME}
 
-#USER ${APP_ID_NAME}
+USER ${APP_ID_NAME}
+ENV PATH=/usr/local/bundle/bin:/opt/jruby/bin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN /opt/jruby/bin/bundle
 CMD ["bundle", "exec", "puma", "-b", "ssl://0.0.0.0:9292?keystore=/opt/java/openjdk/lib/security/cacerts&keystore-pass=changeit&no_tlsv1=true"]
