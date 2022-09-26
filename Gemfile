@@ -12,9 +12,6 @@ gem 'yard'
 gem 'yard-sinatra'
 
 group :development do
-  gem 'capistrano'
-  gem 'capistrano-rvm'
-  gem 'capistrano-bundler'
   gem 'pry'
 end
 
