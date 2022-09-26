@@ -22,4 +22,5 @@ RUN chown -R ${APP_ID_NAME}:${GROUP_ID_NAME} /home/${APP_ID_NAME}
 USER ${APP_ID_NAME}
 ENV PATH=/usr/local/bundle/bin:/opt/jruby/bin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN /opt/jruby/bin/bundle
+RUN ["bundle", "exec", "rake", "assets:precompile"]
 CMD ["bundle", "exec", "puma", "-b", "tcp://0.0.0.0:9292"]
