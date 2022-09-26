@@ -2,9 +2,11 @@ version: '3.5'
 
 services:
   aspace_checker:
-    container_name: 'aspace-checker-debug'
+    container_name: 'aspace-checker'
     build:
       context: './'
       dockerfile: 'Dockerfile'
+    environment:
+      RACK_ENV: 'production'
     ports:
-      - '25252:9292'
+      - '19127:9292'
